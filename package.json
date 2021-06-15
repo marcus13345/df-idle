@@ -8,7 +8,6 @@
     "@types/blessed": "^0.1.17",
     "chalk": "^4.1.1",
     "faker": "^5.5.3",
-    "frigid": "^1.3.3",
     "logger": "^0.0.1",
     "neo-blessed": "^0.2.0",
     "printable-characters": "^1.0.42",

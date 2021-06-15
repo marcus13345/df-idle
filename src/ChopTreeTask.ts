@@ -8,6 +8,11 @@ import { Task } from './Task.js';
 export class ChopTreeTask extends Task {
 	work = 100;
 
+	constructor(count) {
+		super();
+		
+	}
+
 	reward() {
 		Game.current.inv.add(Item.LOG, 1);
 	}

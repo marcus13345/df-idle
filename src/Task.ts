@@ -4,7 +4,7 @@ import chalk from 'chalk';
 import { Pawn } from './Pawn.js';
 import { render, tasksPanel } from './UI.js';
 import { Game } from './Game.js';
-import { progressbar } from './Progressbar.js';
+import { progressbar, ProgressbarStyle } from './Progressbar.js';
 
 export class Task extends Serializable {
 	work = 0;
@@ -53,7 +53,7 @@ export class Task extends Serializable {
 		const width = tasksPanel.width - 2;
 		const left = ' ' + this.title + ' ' + (this.worker?.toString() || chalk.bold.black('Queued'));
 		const bar = width - 2;
-		return `${left}\n ${progressbar(this.completion, bar)}\n`;
+		return `${left}\n ${progressbar(this.completion, bar, ProgressbarStyle.progress)}\n`;
 	}
 
 	get title() {

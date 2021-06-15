@@ -1,29 +1,37 @@
 import { Serializable } from 'frigid';
-import { Item } from './Item.js';
-import { SMap } from './SMap.js';
-import { ItemID } from './index.js';
+import { Game } from './Game.js';
+import { Item, ItemState } from './Item.js';
+import { Renderable } from './UI.js';
 
-export class Inventory extends Serializable {
-	items = new SMap<ItemID, number>();
+export class Inventory extends Serializable implements Renderable {
+	items: ItemState[];
+
+	ctor() {
+		this.items ??= [];
+	}
 
 	static serializationDependencies() {
-		return [SMap];
+		return [ItemState];
 	}
 
 	add(item: Item, qty: number = 1) {
 		const id = item.id;
-		this.ditem(id, qty);
+		const existingArr = this.items.filter(itemState => {
+			return itemState.itemId === id;
+		});
+		let existing: ItemState = null;
+		if(existingArr.length === 1) {
+			existing = existingArr[0];
+		}
+		if(existing) {
+			existing.qty += qty;
+		} else {
+			this.items.push(new ItemState(item, qty, {}));
+		}
+		Game.current.sync();
 	}
 
-	remove(item: Item, qty: number = 1) {
-		const id = item.id;
-		this.ditem(id, -qty);
-	}
-
-	ditem(id, n) {
-		if (this.items.has(id))
-			this.items.set(id, this.items.get(id) + n);
-		else
-			this.items.set(id, n);
+	render() {
+		return this.items.map(item => item.render()).join('\n');
 	}
 }

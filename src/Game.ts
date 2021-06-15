@@ -53,16 +53,15 @@ export class Game extends Frigid implements Tickable, Renderable {
 	}
 	
 	ctor () {
+		game = this;
 		this.pawns ??= [];
 		this.selected ??= this.pawns[0] || null;
 		this.menu = new Menu();
 		this.board ??= new TaskList();
-		this.board.game = this;
 		this.inventory ??= new Inventory();
 		this.clock ??= new Time();
 		this.clock.thing = this;
 		this.clock.start();
-		game = this;
 		render(this);
 	}
 

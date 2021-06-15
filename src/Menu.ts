@@ -6,8 +6,24 @@ import { Game } from './Game.js';
 import { Task } from './Task.js';
 import { ChopTreeTask } from './ChopTreeTask.js';
 import { progressbar } from './Progressbar.js';
+import { inspect } from 'util';
+
+enum SubMenu {
+	NONE = 'NONE',
+	TREES = 'TREES'
+};
+
+enum View {
+	PAWNS = 'Pawns',
+	INVENTORY = 'Inventory',
+	BUILDINGS = 'Buildings',
+};
 
 export class Menu implements Renderable {
+
+	trees: number = 10;
+	subMenu: SubMenu = SubMenu.NONE;
+	view: View = View.PAWNS;
 
 	constructor() {
 		screen.on('keypress', (evt, key) => {
@@ -18,22 +34,41 @@ export class Menu implements Renderable {
 				Game.current.advanceSelection(-1);
 			} else if (key.full === 'down') {
 				Game.current.advanceSelection(1);
-			} else if (key.full === 'c') {
-				Game.current.pawns.push(new Pawn());
-				Game.current.sync();
-			} else if (key.full === 'x') {
-				let i = 0;
-				for(const task of Game.current.board.tasks) {
-					setTimeout(_ => {
-						Game.current.board.removeTask(task);
-					}, i * 100);
-					i ++;
-				}
-				Game.current.sync();
-			} else if (key.full === 't') {
-				const job: Task = new ChopTreeTask();
-				Game.current.board.addTask(job);
+			} else if (key.full === 'left') {
+				this.view = View[Object.keys(View)[Math.min(Math.max(Object.values(View).indexOf(this.view) - 1, 0), Object.keys(View).length - 1)]]
+			} else if (key.full === 'right') {
+				this.view = View[Object.keys(View)[Math.min(Math.max(Object.values(View).indexOf(this.view) + 1, 0), Object.keys(View).length - 1)]]
+			} else if (key.full === 'q') {
+				this.subMenu = SubMenu.TREES;
+			} else if (key.full === 'escape') {
+				this.subMenu = SubMenu.NONE;
 			}
+
+			if(this.subMenu === SubMenu.TREES) {
+				if (key.full === '=') {
+					this.trees ++;
+				} else if (key.full === '-') {
+					this.trees --;
+					this.trees = Math.max(this.trees, 1);
+				} else if (key.full === '+') {
+					this.trees += 10;
+				} else if (key.full === '_') {
+					this.trees -= 10;
+					this.trees = Math.max(this.trees, 1);
+				} else if (key.full === 'enter') {
+					for(let i = 0; i < this.trees; i ++) {
+						Game.current.board.addTask(new ChopTreeTask(1));
+					}
+					this.subMenu = SubMenu.NONE;
+				}
+			} else if(this.subMenu === SubMenu.NONE) {
+				if (key.full === 'z') {
+					Game.current.pawns.push(new Pawn());
+				} else if (key.full === 'x') {
+					Game.current.board.clear();
+				}
+			}
+
 			// const pawn = new Pawn();
 			// Game.current.pawns.push(pawn);
 			Game.current.sync();
@@ -41,15 +76,30 @@ export class Menu implements Renderable {
 	}
 
 	renderJobs() {
-		return (`\
-  ${chalk.greenBright('t')}: Chop Trees
-  ${chalk.greenBright('c')}: Create Pawn
-  ${chalk.greenBright('x')}: Clear Tasks
+
+		const colSpace = ((menuPanel.width - 2) / 2);
+
+		return (`    Menus:${' '.repeat(colSpace - 8)}Actions:\n  ${
+			chalk.greenBright('q')
+		}: ${
+			(this.subMenu !== SubMenu.TREES ? chalk.bold.black : _ => _)('Chop Trees')
+		}${
+			' '.repeat(colSpace - 15)
+		}${chalk.greenBright('z')}: ${
+			(this.subMenu !== SubMenu.NONE ? chalk.bold.black : _ => _)('Create Pawn')
+
+		}\n${
+			' '.repeat(colSpace)
+		}${
+			chalk.greenBright('x')
+		}: ${
+			(this.subMenu !== SubMenu.NONE ? chalk.bold.black : _ => _)('Clear Tasks')
+		}\
 `);
 
 	}
 
-	topBar() {
+	renderTopBar() {
 		const idlers = Game.current.pawns.filter(pawn => pawn.idle);
 		return ` ${Game.current.clock.toString()}{|}Idle: ${idlers.length} `;
 	}
@@ -70,10 +120,63 @@ export class Menu implements Renderable {
 		}`;
 	}
 
+	renderView() {
+		const colSpace = ((menuPanel.width - 2) / 2);
+		return `${
+			// ' '.repeat(colSpace - 20)
+			'{center}'
+		}${(() => {
+			return Object.values(View).map(view => {
+				if(view === this.view) {
+					return chalk.cyan.inverse(` ${view} `);
+				} else {
+					return chalk.cyan(` ${view} `);
+				}
+			}).join('');
+		})()}{/center}\n\n${(() => {
+			switch(this.view) {
+				case View.PAWNS: return this.renderPawns();
+				case View.INVENTORY: return this.renderInv();
+			}
+		})()}`
+	}
+
+	renderInv() {
+		return Game.current.inv.render();
+	}
+
+	renderSubMenu() {
+		return `${(() => {
+			switch(this.subMenu) {
+				case SubMenu.NONE:
+					return `{center}${tags.bright}${tags.black.fg}* Select a menu above for options *`;
+				case SubMenu.TREES:
+					return this.renderTreesSubMenu();
+			}
+		})()}`;
+	}
+
+	renderTreesSubMenu() {
+		return [
+			`{center}Chop Trees`,
+			`{left}  ${chalk.greenBright('-=_+')}: ${this.trees}`,
+			`{left}  ${chalk.greenBright('enter')}: Create Task`,
+			`{left}  ${chalk.greenBright('escape')}: Cancel`
+		].join('\n');
+	}
+
 	render() {
 		const width = menuPanel.width - 2;
 		const hr = chalk.bold.black('━'.repeat(width));
-		const content = [this.topBar(), hr, this.renderPawns(), hr, this.renderJobs()].join('\n');
+		const content = [
+			this.renderTopBar(),
+			hr,
+			this.renderView(),
+			hr,
+			this.renderJobs(),
+			hr,
+			this.renderSubMenu()
+		].join('\n');
 		menuPanel.setContent(content);
 	}
 }

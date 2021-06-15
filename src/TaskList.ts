@@ -6,7 +6,12 @@ import { render, Renderable, tasksPanel } from './UI.js';
 
 export class TaskList extends Serializable implements Renderable {
 	tasks: Task[] = [];
-	game: Game;
+
+	clear() {
+		for(const task of this.tasks) {
+			this.removeTask(task);
+		}
+	}
 
 	static serializationDependencies() {
 		return [ChopTreeTask, Task];

@@ -1,0 +1,23 @@
+{
+  "name": "df-idle",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@types/blessed": "^0.1.17",
+    "chalk": "^4.1.1",
+    "faker": "^5.5.3",
+    "frigid": "^1.3.3",
+    "logger": "^0.0.1",
+    "neo-blessed": "^0.2.0",
+    "printable-characters": "^1.0.42",
+    "sisteransi": "^1.0.5",
+    "typescript": "^4.3.2"
+  },
+  "scripts": {
+    "compile:watch": "tsc --watch",
+    "start": "node --enable-source-maps out/index.js",
+    "dev": "supervisor -w out -n exit -t -k --exec yarn -- start"
+  }
+}

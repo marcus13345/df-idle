@@ -1,4 +1,6 @@
+import chalk from "chalk";
 import { Serializable } from "frigid";
+import { isThisTypeNode } from "typescript";
 import log from "./log.js";
 
 const daysInMonth = [
@@ -17,6 +19,7 @@ const months = [
 
 export default class Time extends Serializable{
 	rate: number;
+	paused = true;
 
 	thing: Tickable;
 
@@ -27,7 +30,12 @@ export default class Time extends Serializable{
 	minute: number;
 
 	toString() {
-		return `${this.hour}:${this.minute.toString().padStart(2, '0')} ${this.year}-${this.month}-${this.day}`
+		const sym = (this.hour >= 6 && this.hour < 20) ?
+			chalk.yellowBright('☼') :
+			chalk.blue('☾')
+
+		return `${sym} ${this.hour.toString().padStart(2, ' ')}:${this.minute.toString().padStart(2, '0')} ${months[this.month]} ${this.day + 1}, ${(this.year + 1).toString().padStart(4, '0')}`
+
 		// return '☾' || '☼';
 	}
 
@@ -40,7 +48,12 @@ export default class Time extends Serializable{
 		this.year ??= 0;
 	}
 
+	pause() {
+		this.paused = true;
+	}
+
 	start() {
+		this.paused = false;
 		setTimeout(this.doTick.bind(this), 0);
 	}
 	
@@ -73,6 +86,7 @@ export default class Time extends Serializable{
 		}
 		const elapsed = new Date().getTime() - start;
 		const wait = Math.max(timeout - elapsed, 0);
+		if(this.paused) return;
 		setTimeout(this.doTick.bind(this), wait)
 	}
 }

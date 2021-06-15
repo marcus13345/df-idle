@@ -25,7 +25,25 @@ export const tags = {
 	white: color('white'),
 	reset: '{/}',
 	bright: '{bold}'
-}
+};
+
+export const boxStyle = () => {
+	return {
+		style: {
+			border: {
+				fg: 'white'
+			},
+			focus: {
+				border: {
+					fg: 'cyan'
+				}
+			}
+		},
+		border: {
+			type: 'line'
+		}
+	};
+};
 
 let currentRenderable = null;
 export function render(thing?: Renderable) {
@@ -39,13 +57,7 @@ export const tasksPanel = blessed.box({
 	left: 0,
 	width: '50%+1',
 	height: '100%-1',
-	border: {
-		type: "line"
-	},
-	style: {
-		border: {
-		}
-	},
+	...boxStyle(),
 	tags: true
 });
 
@@ -54,13 +66,7 @@ export const menuPanel = blessed.box({
 	left: '50%+1',
 	width: '50%',
 	height: '100%-1',
-	border: {
-		type: "line"
-	},
-	style: {
-		border: {
-		}
-	},
+	...boxStyle(),
 	tags: true
 });
 
@@ -71,7 +77,9 @@ const titleBar = blessed.box({
 	height: 1,
 	tags: true,
 	content: '  Colony Manager Sim{|}{bold}{black-fg}v0.1.0      {/}'
-})
+});
+
+menuPanel.focus();
 
 screen.append(tasksPanel);
 screen.append(menuPanel);

@@ -7,6 +7,7 @@ import { Task } from './Task.js';
 import { ChopTreeTask } from './ChopTreeTask.js';
 import { progressbar } from './Progressbar.js';
 import { inspect } from 'util';
+import { Popup } from './Popup.js';
 
 enum SubMenu {
 	NONE = 'NONE',
@@ -26,7 +27,7 @@ export class Menu implements Renderable {
 	view: View = View.PAWNS;
 
 	constructor() {
-		screen.on('keypress', (evt, key) => {
+		menuPanel.on('keypress', (evt, key) => {
 			log.info('keypress', key);
 			if (key.full === 'delete') {
 				Game.current.removePawn(Game.current.selected);
@@ -40,6 +41,10 @@ export class Menu implements Renderable {
 				this.view = View[Object.keys(View)[Math.min(Math.max(Object.values(View).indexOf(this.view) + 1, 0), Object.keys(View).length - 1)]]
 			} else if (key.full === 'q') {
 				this.subMenu = SubMenu.TREES;
+			} else if (key.full === '1') {
+				new Popup('this is a test!');
+			} else if (key.full === '2') {
+				new Popup('Etiam hendrerit elit sit amet metus congue dictum nec eu lacus. Sed aliquam in justo efficitur faucibus. Duis tellus diam, congue volutpat lorem et, semper consectetur erat. Nunc ac velit dignissim, tincidunt augue eget, tristique orci. Duis lacus sapien, bibendum id pharetra vel, semper et nunc. Vestibulum eu tellus imperdiet, lacinia ante ac, porta nisl. Donec at eleifend risus, ac dictum odio.');
 			} else if (key.full === 'escape') {
 				this.subMenu = SubMenu.NONE;
 			}

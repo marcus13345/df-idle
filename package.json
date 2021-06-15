@@ -20,6 +20,6 @@
     "compile:watch": "tsc --watch",
     "start": "node --enable-source-maps out/index.js",
     "dev": "supervisor -w out -n exit -t -k --exec yarn -- start",
-    "prod": "git fetch && git pull && tsc && yarn start"
+    "prod": "git fetch && git pull && yarn && tsc && yarn start"
   }
 }

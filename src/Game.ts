@@ -5,11 +5,12 @@ import { TaskList } from './TaskList.js';
 import { Inventory } from './Inventory.js';
 import { Menu } from './Menu.js';
 import Time, { Tickable } from './Time.js';
-import { render, Renderable } from './UI.js';
+import { render, Renderable, setTitle } from './UI.js';
 import log from './log.js';
 import { ChopTreeTask } from './ChopTreeTask.js';
 import { Task } from './Task.js';
 import { ready } from './mDNS.js';
+import faker from 'faker';
 
 let game = null;
 
@@ -20,6 +21,7 @@ export class Game extends Frigid implements Tickable, Renderable {
 	board: TaskList;
 	menu: Menu;
 	clock: Time;
+	name: string;
 
 	[DEBUG] = true;
 
@@ -55,6 +57,8 @@ export class Game extends Frigid implements Tickable, Renderable {
 	
 	ctor () {
 		game = this;
+		this.name ??= faker.address.city();
+		setTitle(this.name);
 		this.pawns ??= [];
 		this.selected ??= this.pawns[0] || null;
 		this.menu = new Menu();
@@ -63,7 +67,7 @@ export class Game extends Frigid implements Tickable, Renderable {
 		this.clock ??= new Time();
 		this.clock.thing = this;
 		this.clock.start();
-		ready();
+		ready(this.name);
 		render(this);
 	}
 

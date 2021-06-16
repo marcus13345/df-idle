@@ -31,9 +31,12 @@ export class Pawn extends Serializable implements Tickable {
 	};
 	job: Task;
 	awake: boolean;
+	sex: number;
 
 	energy: number;
 	fun: number;
+
+	age: number;
 
 	async tick() {
 		this.energy -= energyScale;
@@ -78,6 +81,10 @@ export class Pawn extends Serializable implements Tickable {
 			first: faker.name.firstName(),
 			last: faker.name.lastName()
 		};
+		if(!this.sex) {
+			this.sex = Math.round(Math.random());
+			this.name.first = faker.name.firstName(this.sex);
+		}
 		this.awake ??= true;
 		this.energy ??= 100;
 		if(this.job?.completed) {

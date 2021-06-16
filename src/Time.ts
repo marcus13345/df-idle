@@ -40,7 +40,7 @@ export default class Time extends Serializable{
 	}
 
 	ctor() {
-		this.rate ??= 10;
+		this.rate = 60;
 		this.minute ??= 0;
 		this.hour ??= 0;
 		this.day ??= 0;

@@ -76,8 +76,13 @@ const titleBar = blessed.box({
 	width: '100%',
 	height: 1,
 	tags: true,
-	content: '  Colony Manager Sim{|}{bold}{black-fg}v0.1.0      {/}'
 });
+
+export function setTitle(title) {
+	titleBar.setContent(`  ${title}{|}{bold}{black-fg}v0.1.0      {/}`);
+}
+
+setTitle('');
 
 menuPanel.focus();
 

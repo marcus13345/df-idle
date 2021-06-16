@@ -1,15 +1,17 @@
-
 import bonjour from 'bonjour';
 import log from './log.js';
+import getPort from 'get-port';
 import os from 'os'
 import * as uuid from 'uuid';
+import faker from 'faker';
+
 const mdns = bonjour();
 const ID = uuid.v4();
 let devices = [];
 
 class Player {
 	name: string;
-	address: string;
+	host: string;
 	port: number;
 
 	toString() {
@@ -25,19 +27,22 @@ const network = {
 
 export default network;
 
-export function ready() {
+export async function ready(name, onThing?) {
+	const port = await getPort({port: getPort.makeRange(52300, 52399)});
 	mdns.publish({
 		type: 'dfi',
-		name: os.hostname() + '-' + ID,
-		port: 6969
+		name,
+		port: port
 	});
 }
 
 mdns.find({
 	type: 'dfi'
 }, (service) => {
-	log.info('found network device', service);
 	const p = new Player();
-	p.name = service.fqdn;
+	p.name = service.name;
+	p.host = service.host;
+	p.port = service.port;
+	log.info('Found player', p);
 	devices.push(p);
 });

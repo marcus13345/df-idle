@@ -3,6 +3,7 @@ import blessed from 'neo-blessed';
 import { Game } from '../Game.js';
 import { stringify } from '../Memory.js';
 import { Pawn } from '../Pawn.js';
+import Time from '../Time.js';
 import { boxStyle, screen } from './UI.js';
 
 export class PawnDetails {
@@ -45,8 +46,8 @@ export class PawnDetails {
 		this.box.setContent(`${
 			this.pawn.toString()
 		}{|}${
-			(this.pawn.sex ? "male" : "female") +
-			', ' + this.pawn.age
+			(this.pawn.sex ? "female" : "male") +
+			', ' + new Time(this.pawn.age).asAge()
 		}\n${(() => {
 			return this.pawn.memories.map(memory => stringify(memory)).join('\n')
 		})()}\n\n{|}${

@@ -43,7 +43,15 @@ export async function ready(name, onThing?) {
 			const {pawns: pawnJsons, from} = JSON.parse(message);
 			const pawns = [];
 			for(const pawnJson of pawnJsons) {
-				const pawn = Pawn.fromJson(pawnJson);
+				const pawn: Pawn = Pawn.fromJson(pawnJson);
+				pawn.memories.push({
+					type: "travel",
+					time: {
+						age: pawn.age,
+						locale: Game.current.clock.toString()
+					},
+					location: Game.current.name
+				})
 				pawns.push(pawn);
 			}
 			new Popup(`${(() => {

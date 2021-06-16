@@ -30,18 +30,42 @@ export default class Time extends Serializable implements Renderable{
 	hour: number;
 	minute: number;
 
+	constructor(timestamp: number = 0) {
+		super();
+		this.minute = timestamp;
+		this.normalize();
+	}
+
+	asAge() {
+		if(this.year > 1) {
+			return this.year + ' years old';
+		} else {
+			if(this.month > 2) {
+				return this.month + ' months old';
+			} else {
+				if(this.day > 1) {
+					return this.day + ' days old';
+				} else if(this.day === 1) {
+					return '1 day old';
+				} else {
+					return 'newborn';
+				}
+			}
+		}
+	}
+
 	render() {
 		const sym = (this.hour >= 6 && this.hour < 20) ?
 			chalk.yellowBright('☼') :
 			chalk.blue('☾')
 
-		return `${sym} ${this.hour.toString().padStart(2, ' ')}:${this.minute.toString().padStart(2, '0')} ${months[this.month]} ${this.day + 1}, ${(this.year + 1).toString().padStart(4, '0')}`
+		return `${sym} ${this.hour.toString().padStart(2, ' ')}:${this.minute.toString().padStart(2, '0')} ${months[this.month]} ${this.day + 1}, ${this.normalizedYear}`
 
 		// return '☾' || '☼';
 	}
 
 	toString() {
-		return `${this.hour}:${this.minute} ${months[this.month]} ${this.day + 1}, ${(this.year + 1).toString().padStart(4, '0')}`
+		return `${this.hour}:${this.minute.toString().padStart(2, '0')} ${months[this.month]} ${this.day + 1}, ${this.normalizedYear}`
 	}
 
 	ctor() {
@@ -89,21 +113,54 @@ export default class Time extends Serializable implements Renderable{
 	
 	advanceTime(minutes) {
 		this.minute ++;
+		this.normalize()
+	}
+
+	get normalizedYear() {
+		if(this.year >= 0) {
+			return (this.year + 1).toString().padStart(4, '0') + ' CE';
+		} else {
+			return Math.abs(this.year).toString().padStart(4, '0') + ' BCE';
+		}
+	}
+
+	normalize() {
 		while(this.minute >= 60) {
 			this.minute -= 60;
 			this.hour ++;
 		}
+		while(this.minute < 0) {
+			this.minute += 60;
+			this.hour --;
+		}
+
 		while(this.hour >= 24) {
 			this.hour -= 24;
 			this.day ++;
 		}
-		while(this.day >= daysInMonth[this.month]) {
-			this.day -= daysInMonth[this.month];
+		while(this.hour < 0) {
+			this.hour += 24;
+			this.day --;
+		}
+
+		while(this.day < 0) {
+			this.day += daysInMonth[
+				((this.month % months.length) + months.length) % months.length
+			];
+			this.month --;
+		}
+		while(this.day >= daysInMonth[this.month % months.length]) {
+			this.day -= daysInMonth[this.month % months.length];
 			this.month ++;
 		}
+
 		while(this.month >= 12) {
 			this.month -= 12;
 			this.year ++;
+		}
+		while(this.month < 0) {
+			this.month += 12;
+			this.year --;
 		}
 	}
 

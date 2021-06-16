@@ -3,7 +3,7 @@ import faker from 'faker';
 import chalk from 'chalk';
 import log from './log.js';
 import { Task } from './tasks/Task.js';
-import { Tickable } from './Time.js';
+import Time, { Tickable } from './Time.js';
 import { ChopTreeTask } from './tasks/ChopTreeTask.js';
 import { Game } from './Game.js';
 import { render } from './ui/UI.js';
@@ -94,13 +94,13 @@ export class Pawn extends Serializable implements Tickable {
 		this.energy ??= 100;
 		this.memories ??= [];
 		if(!this.age) {
-			this.age = 0;
+			this.age = Math.floor(525600 * (16 + Math.random() * 9));
 			this.memories.push({
 				type: "birth",
 				location: Game.current.name,
 				time: {
-					stamp: Game.current.clock.stamp,
-					locale: Game.current.clock.toString()
+					age: 0,
+					locale: new Time(Game.current.clock.stamp - this.age).toString()
 				}
 			})
 		}

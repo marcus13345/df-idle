@@ -7,10 +7,14 @@ const mdns = bonjour();
 const ID = uuid.v4();
 let devices = [];
 
-type Player = {
-	name: string,
-	address: string,
-	port: number
+class Player {
+	name: string;
+	address: string;
+	port: number;
+
+	toString() {
+		return `  ${this.name}`;
+	}
 }
 
 const network = {
@@ -33,4 +37,7 @@ mdns.find({
 	type: 'dfi'
 }, (service) => {
 	log.info('found network device', service);
+	const p = new Player();
+	p.name = service.fqdn;
+	devices.push(p);
 });

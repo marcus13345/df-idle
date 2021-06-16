@@ -9,6 +9,7 @@ import { render, Renderable } from './UI.js';
 import log from './log.js';
 import { ChopTreeTask } from './ChopTreeTask.js';
 import { Task } from './Task.js';
+import { ready } from './mDNS.js';
 
 let game = null;
 
@@ -62,6 +63,7 @@ export class Game extends Frigid implements Tickable, Renderable {
 		this.clock ??= new Time();
 		this.clock.thing = this;
 		this.clock.start();
+		ready();
 		render(this);
 	}
 

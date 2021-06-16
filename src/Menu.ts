@@ -8,6 +8,7 @@ import { ChopTreeTask } from './ChopTreeTask.js';
 import { progressbar } from './Progressbar.js';
 import { inspect } from 'util';
 import { Popup } from './Popup.js';
+import mdns from './mDNS.js';
 
 enum SubMenu {
 	NONE = 'NONE',
@@ -17,7 +18,7 @@ enum SubMenu {
 enum View {
 	PAWNS = 'Pawns',
 	INVENTORY = 'Inventory',
-	BUILDINGS = 'Buildings',
+	MULTIPLAYER = 'Multiplayer',
 };
 
 export class Menu implements Renderable {
@@ -142,8 +143,14 @@ export class Menu implements Renderable {
 			switch(this.view) {
 				case View.PAWNS: return this.renderPawns();
 				case View.INVENTORY: return this.renderInv();
+				case View.MULTIPLAYER: return this.renderMultiplayer();
 			}
 		})()}`
+	}
+
+	renderMultiplayer() {
+		if(mdns.players.length === 0) return `{center}${tags.bright}${tags.black.fg}No friends online{/center}`;
+		return mdns.players.map(player => player.toString()).join('\n');
 	}
 
 	renderInv() {

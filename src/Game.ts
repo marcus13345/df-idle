@@ -3,13 +3,13 @@ import { DEBUG } from 'frigid/out/Serializable.js';
 import { Pawn } from './Pawn.js';
 import { TaskList } from './TaskList.js';
 import { Inventory } from './Inventory.js';
-import { Menu } from './Menu.js';
+import { Menu } from './ui/Menu.js';
 import Time, { Tickable } from './Time.js';
-import { render, Renderable, setTitle } from './UI.js';
+import { render, Renderable, setTitle } from './ui/UI.js';
 import log from './log.js';
-import { ChopTreeTask } from './ChopTreeTask.js';
-import { Task } from './Task.js';
-import { ready } from './mDNS.js';
+import { ChopTreeTask } from './tasks/ChopTreeTask.js';
+import { Task } from './tasks/Task.js';
+import { ready } from './multiplayer/mDNS.js';
 import faker from 'faker';
 
 let game = null;

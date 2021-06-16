@@ -1,5 +1,5 @@
 import { Serializable } from 'frigid';
-import { Renderable } from './UI';
+import { Renderable } from './ui/UI';
 
 export type ItemID = string;
 

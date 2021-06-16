@@ -96,3 +96,11 @@ screen.key(['C-c'], function(ch, key) {
 	process.stdout.write(ansi.cursor.show);
   return process.exit(0);
 });
+
+tasksPanel.key('f2', () => {
+	menuPanel.focus();
+});
+
+menuPanel.key('f1', () => {
+	tasksPanel.focus();
+});

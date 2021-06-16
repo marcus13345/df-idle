@@ -1,9 +1,9 @@
 import chalk from 'chalk';
 import blessed from 'neo-blessed';
-import { Game } from './Game.js';
-import { ItemState } from './Item.js';
-import { Player } from './mDNS.js';
-import { Pawn } from './Pawn.js';
+import { Game } from '../Game.js';
+import { ItemState } from '../Item.js';
+import { Player } from "../multiplayer/Player";
+import { Pawn } from '../Pawn.js';
 import { boxStyle, screen } from './UI.js';
 
 export class GiftPopup {

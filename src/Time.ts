@@ -2,6 +2,7 @@ import chalk from "chalk";
 import { Serializable } from "frigid";
 import { isThisTypeNode } from "typescript";
 import log from "./log.js";
+import { Renderable } from "./ui/UI.js";
 
 const daysInMonth = [
 	31, 28, 31,
@@ -17,7 +18,7 @@ const months = [
 	'Oct', 'Nov', 'Dec'
 ]
 
-export default class Time extends Serializable{
+export default class Time extends Serializable implements Renderable{
 	rate: number;
 	paused = true;
 
@@ -29,7 +30,7 @@ export default class Time extends Serializable{
 	hour: number;
 	minute: number;
 
-	toString() {
+	render() {
 		const sym = (this.hour >= 6 && this.hour < 20) ?
 			chalk.yellowBright('☼') :
 			chalk.blue('☾')
@@ -39,6 +40,10 @@ export default class Time extends Serializable{
 		// return '☾' || '☼';
 	}
 
+	toString() {
+		return `${this.hour}:${this.minute} ${months[this.month]} ${this.day + 1}, ${(this.year + 1).toString().padStart(4, '0')}`
+	}
+
 	ctor() {
 		this.rate = 60;
 		this.minute ??= 0;
@@ -46,6 +51,31 @@ export default class Time extends Serializable{
 		this.day ??= 0;
 		this.month ??= 0;
 		this.year ??= 0;
+	}
+
+	get stamp() {
+		let minute = this.minute;
+		let hour = this.hour;
+		let day = this.day;
+		let month = this.month;
+		let year = this.year;
+
+		const daysInYear = daysInMonth.reduce((a, b) => a+b, 0);
+
+		day += daysInYear * year;
+		year = 0;
+		while(month > 0) {
+			day += daysInMonth[month];
+			month --;
+		}
+
+		hour += day * 24;
+		day = 0;
+
+		minute += hour * 60;
+		hour = 0;
+
+		return minute;
 	}
 
 	pause() {

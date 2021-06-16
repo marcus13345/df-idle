@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import blessed from 'neo-blessed';
-import { Game } from './Game.js';
+import { Game } from '../Game.js';
 import { boxStyle, screen } from './UI.js';
 
 export class Popup {

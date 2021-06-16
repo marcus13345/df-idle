@@ -1,8 +1,8 @@
 import { Serializable } from 'frigid';
-import { ChopTreeTask } from "./ChopTreeTask.js";
+import { ChopTreeTask } from "./tasks/ChopTreeTask.js";
 import { Game } from './Game.js';
-import { Task } from "./Task.js";
-import { render, Renderable, tasksPanel } from './UI.js';
+import { Task } from "./tasks/Task.js";
+import { render, Renderable, tasksPanel } from './ui/UI.js';
 
 export class TaskList extends Serializable implements Renderable {
 	tasks: Task[] = [];

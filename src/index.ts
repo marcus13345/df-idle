@@ -1,5 +1,5 @@
 import { Game } from './Game.js';
-import { render } from './UI.js';
+import { render } from './ui/UI.js';
 
 const saveFile = process.argv[2];
 

@@ -1,7 +1,7 @@
 import { Serializable } from 'frigid';
 import { Game } from './Game.js';
 import { Item, ItemState } from './Item.js';
-import { Renderable } from './UI.js';
+import { Renderable } from './ui/UI.js';
 
 export class Inventory extends Serializable implements Renderable {
 	items: ItemState[];

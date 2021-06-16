@@ -1,7 +1,7 @@
 import chalk from 'chalk';
-import { Game } from './Game.js';
-import { Item } from './Item.js';
-import { Pawn } from './Pawn.js';
+import { Game } from '../Game.js';
+import { Item } from '../Item.js';
+import { Pawn } from '../Pawn.js';
 import { Task } from './Task.js';
 
 

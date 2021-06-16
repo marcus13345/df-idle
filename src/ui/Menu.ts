@@ -1,15 +1,14 @@
-import { Pawn } from './Pawn.js';
-import log from './log.js';
-import { screen, menuPanel, render, tags, Renderable } from './UI.js';
+import { Pawn } from '../Pawn.js';
+import log from '../log.js';
+import { menuPanel, tags, Renderable } from './UI.js';
 import chalk from 'chalk';
-import { Game } from './Game.js';
-import { Task } from './Task.js';
-import { ChopTreeTask } from './ChopTreeTask.js';
-import { progressbar } from './Progressbar.js';
-import { inspect } from 'util';
+import { Game } from '../Game.js';
+import { ChopTreeTask } from '../tasks/ChopTreeTask.js';
+import { progressbar } from '../Progressbar.js';
 import { Popup } from './Popup.js';
-import mdns from './mDNS.js';
+import mdns from '../multiplayer/mDNS.js';
 import { GiftPopup } from './GiftPopup.js';
+import { PawnDetails } from './PawnDetails.js';
 
 enum SubMenu {
 	NONE = 'NONE',
@@ -53,6 +52,8 @@ export class Menu implements Renderable {
 					Game.current.advanceSelection(-1);
 				} else if (key.full === 'down') {
 					Game.current.advanceSelection(1);
+				} else if (key.full === 'enter') {
+					new PawnDetails(Game.current.selected);
 				}
 			}
 
@@ -124,7 +125,7 @@ export class Menu implements Renderable {
 
 	renderTopBar() {
 		const idlers = Game.current.pawns.filter(pawn => pawn.idle);
-		return ` ${Game.current.clock.toString()}{|}Idle: ${idlers.length} `;
+		return ` ${Game.current.clock.render()}{|}Idle: ${idlers.length} `;
 	}
 
 	renderPawns() {

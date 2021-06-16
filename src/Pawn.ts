@@ -2,11 +2,12 @@ import { Serializable } from 'frigid';
 import faker from 'faker';
 import chalk from 'chalk';
 import log from './log.js';
-import { Task } from './Task.js';
+import { Task } from './tasks/Task.js';
 import { Tickable } from './Time.js';
-import { ChopTreeTask } from './ChopTreeTask.js';
+import { ChopTreeTask } from './tasks/ChopTreeTask.js';
 import { Game } from './Game.js';
-import { render } from './UI.js';
+import { render } from './ui/UI.js';
+import { Memory } from './Memory.js';
 
 const LABORS = {
 	CUT_TREE: Symbol('CUT_TREE'),
@@ -38,7 +39,11 @@ export class Pawn extends Serializable implements Tickable {
 
 	age: number;
 
+	memories: Memory[];
+
 	async tick() {
+		this.age ++;
+
 		this.energy -= energyScale;
 
 		if(this.awake === false) {
@@ -87,6 +92,20 @@ export class Pawn extends Serializable implements Tickable {
 		}
 		this.awake ??= true;
 		this.energy ??= 100;
+		this.memories ??= [];
+		if(!this.age) {
+			this.age = 0;
+			this.memories.push({
+				type: "birth",
+				location: Game.current.name,
+				time: {
+					stamp: Game.current.clock.stamp,
+					locale: Game.current.clock.toString()
+				}
+			})
+		}
+
+
 		if(this.job?.completed) {
 			this.stopWorking();
 		}

@@ -1,53 +1,21 @@
 import bonjour from 'bonjour';
-import log from './log.js';
+import log from '../log.js';
 import getPort from 'get-port';
 import os from 'os'
 import * as uuid from 'uuid';
 import faker from 'faker';
 import chalk from 'chalk';
-import { Item, ItemState } from './Item.js';
+import { Item } from '../Item.js';
 import WebSocket from 'ws';
-import { Popup } from './Popup.js';
+import { Popup } from '../ui/Popup.js';
 import { inspect } from 'util'
-import { Pawn } from './Pawn.js';
-import { Game } from './Game.js';
+import { Pawn } from '../Pawn.js';
+import { Game } from '../Game.js';
+import { Player } from './Player.js';
 
 const mdns = bonjour();
 const ID = uuid.v4();
 let devices: Player[] = [];
-
-export class Player {
-	name: string;
-	host: string;
-	port: number;
-
-	toString() {
-		return this.name;
-	}
-
-	send(items: (ItemState | Pawn)[]) {
-		return new Promise((res, rej) => {
-			const pawnJsons: string[] = [];
-			for(const item of items) {
-				Game.current.removePawn(item as Pawn);
-				pawnJsons.push(item.toJson());
-			}
-			const gift: GiftMessage = {
-				pawns: pawnJsons,
-				from: Game.current.name
-			};
-			const socket = new WebSocket(`ws://${this.host}:${this.port}`);
-			socket.on('open', () => {
-				socket.send(JSON.stringify(gift));
-				socket.close();
-				res(undefined);
-			});
-			socket.on('error', () => {
-				rej(items);
-			});
-		});
-	}
-}
 
 const network = {
 	get players() {

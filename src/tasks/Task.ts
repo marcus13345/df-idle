@@ -1,10 +1,10 @@
 import { Serializable } from 'frigid';
 import EventEmitter from 'events';
 import chalk from 'chalk';
-import { Pawn } from './Pawn.js';
-import { render, tasksPanel } from './UI.js';
-import { Game } from './Game.js';
-import { progressbar, ProgressbarStyle } from './Progressbar.js';
+import { Pawn } from '../Pawn.js';
+import { render, tasksPanel } from '../ui/UI.js';
+import { Game } from '../Game.js';
+import { progressbar, ProgressbarStyle } from '../Progressbar.js';
 
 export class Task extends Serializable {
 	work = 0;

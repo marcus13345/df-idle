@@ -9,33 +9,41 @@ import { Item, ItemState } from './Item.js';
 import WebSocket from 'ws';
 import { Popup } from './Popup.js';
 import { inspect } from 'util'
+import { Pawn } from './Pawn.js';
+import { Game } from './Game.js';
 
 const mdns = bonjour();
 const ID = uuid.v4();
 let devices: Player[] = [];
 
-class Player {
+export class Player {
 	name: string;
 	host: string;
 	port: number;
 
 	toString() {
-		return `  ${this.name} ${chalk.bold.black(`${this.host}:${this.port}`)}`;
+		return this.name;
 	}
 
-	sendItem(item: ItemState) {
+	send(items: (ItemState | Pawn)[]) {
 		return new Promise((res, rej) => {
-			const log = new ItemState(Item.LOG, 1, {});
-			const json = log.toJson();
+			const pawnJsons: string[] = [];
+			for(const item of items) {
+				Game.current.removePawn(item as Pawn);
+				pawnJsons.push(item.toJson());
+			}
+			const gift: GiftMessage = {
+				pawns: pawnJsons,
+				from: Game.current.name
+			};
 			const socket = new WebSocket(`ws://${this.host}:${this.port}`);
-			// new Popup(`opening ws://${this.host}:${this.port}`);
 			socket.on('open', () => {
-				socket.send(json);
+				socket.send(JSON.stringify(gift));
 				socket.close();
 				res(undefined);
 			});
 			socket.on('error', () => {
-				rej(log);
+				rej(items);
 			});
 		});
 	}
@@ -45,6 +53,11 @@ const network = {
 	get players() {
 		return devices;
 	}
+}
+
+export type GiftMessage = {
+	pawns: string[],
+	from: string
 }
 
 export default network;
@@ -59,7 +72,18 @@ export async function ready(name, onThing?) {
 	const wss = new WebSocket.Server({ port });
 	wss.on('connection', function connection(ws) {
 		ws.on('message', function incoming(message) {
-			new Popup(inspect(message));
+			const {pawns: pawnJsons, from} = JSON.parse(message);
+			const pawns = [];
+			for(const pawnJson of pawnJsons) {
+				const pawn = Pawn.fromJson(pawnJson);
+				pawns.push(pawn);
+			}
+			new Popup(`${(() => {
+				if(pawns.length === 0) return `A care package has arrived from ${from}.`;
+				if(pawns.length === 1) return `A traveler from ${from} named ${pawns[0].toString()} has arrived.`;
+				if(pawns.length > 1) return `A caravan of ${pawns.length} people from ${from} has arrived.`
+			})()}`);
+			for(const pawn of pawns) Game.current.pawns.push(pawn);
 		});
 	});
 }

@@ -9,6 +9,7 @@ import { progressbar } from './Progressbar.js';
 import { inspect } from 'util';
 import { Popup } from './Popup.js';
 import mdns from './mDNS.js';
+import { GiftPopup } from './GiftPopup.js';
 
 enum SubMenu {
 	NONE = 'NONE',
@@ -57,7 +58,8 @@ export class Menu implements Renderable {
 
 			if(this.view === View.MULTIPLAYER) {
 				if (key.full === 'enter') {
-					mdns.players[this.multiplayerSelected].sendItem(null);
+					new GiftPopup(mdns.players[this.multiplayerSelected]);
+					// mdns.players[this.multiplayerSelected].sendItem(null);
 				} else if (key.full === 'up') {
 					this.multiplayerSelected --;
 				} else if (key.full === 'down') {
@@ -168,8 +170,8 @@ export class Menu implements Renderable {
 	renderMultiplayer() {
 		if(mdns.players.length === 0) return `{center}${tags.bright}${tags.black.fg}No friends online{/center}`;
 		return mdns.players.map((player, i) => {
-			if(i === this.multiplayerSelected) return '> ' + player.toString();
-			else return player.toString();
+			if(i === this.multiplayerSelected) return '  ❯ ' + player.toString();
+			else return '    ' + chalk.bold.black(player.toString());
 		}).join('\n');
 	}
 

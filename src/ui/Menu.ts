@@ -1,14 +1,15 @@
 import { Pawn } from '../Pawn.js';
 import log from '../log.js';
-import { menuPanel, tags, Renderable } from './UI.js';
-import chalk from 'chalk';
+import { menuPanel, Renderable } from './UI.js';
 import { Game } from '../Game.js';
 import { ChopTreeTask } from '../tasks/ChopTreeTask.js';
-import { progressbar } from '../Progressbar.js';
+import { progressbar, stats, barCache } from '../Progressbar.js';
 import { Popup } from './Popup.js';
 import mdns from '../multiplayer/mDNS.js';
 import { GiftPopup } from './GiftPopup.js';
 import { PawnDetails } from './PawnDetails.js';
+import { defaultTheme, getTheme } from './Theme.js';
+import { inspect } from 'util';
 
 enum SubMenu {
 	NONE = 'NONE',
@@ -38,9 +39,9 @@ export class Menu implements Renderable {
 			} else if (key.full === 'q') {
 				this.subMenu = SubMenu.TREES;
 			} else if (key.full === '1') {
-				new Popup('this is a test!');
+				Popup.show(inspect(stats));
 			} else if (key.full === '2') {
-				new Popup('Etiam hendrerit elit sit amet metus congue dictum nec eu lacus. Sed aliquam in justo efficitur faucibus. Duis tellus diam, congue volutpat lorem et, semper consectetur erat. Nunc ac velit dignissim, tincidunt augue eget, tristique orci. Duis lacus sapien, bibendum id pharetra vel, semper et nunc. Vestibulum eu tellus imperdiet, lacinia ante ac, porta nisl. Donec at eleifend risus, ac dictum odio.');
+				Popup.show('Etiam hendrerit elit sit amet metus congue dictum nec eu lacus. Sed aliquam in justo efficitur faucibus. Duis tellus diam, congue volutpat lorem et, semper consectetur erat. Nunc ac velit dignissim, tincidunt augue eget, tristique orci. Duis lacus sapien, bibendum id pharetra vel, semper et nunc. Vestibulum eu tellus imperdiet, lacinia ante ac, porta nisl. Donec at eleifend risus, ac dictum odio.');
 			} else if (key.full === 'escape') {
 				this.subMenu = SubMenu.NONE;
 			}
@@ -103,29 +104,30 @@ export class Menu implements Renderable {
 
 		const colSpace = ((menuPanel.width - 2) / 2);
 
-		return (`    Menus:${' '.repeat(colSpace - 8)}Actions:\n  ${
-			chalk.greenBright('q')
-		}: ${
-			(this.subMenu !== SubMenu.TREES ? chalk.bold.black : _ => _)('Chop Trees')
+		return (`    ${getTheme().header('Menus')}${getTheme().normal(':')}${
+			' '.repeat(colSpace - 8)
+		}${getTheme().header('Actions')}${getTheme().normal(':')}\n  ${
+			getTheme().hotkey('q')
+		}${getTheme().normal(': ')}${
+			(this.subMenu !== SubMenu.TREES ? getTheme().normal : getTheme().selected)('Chop Trees')
 		}${
 			' '.repeat(colSpace - 15)
-		}${chalk.greenBright('z')}: ${
-			(this.subMenu !== SubMenu.NONE ? chalk.bold.black : _ => _)('Create Pawn')
+		}${getTheme().hotkey('z')}${getTheme().normal(': ')}${
+			(this.subMenu !== SubMenu.NONE ? getTheme().normal : getTheme().selected)('Create Pawn')
 
 		}\n${
 			' '.repeat(colSpace)
 		}${
-			chalk.greenBright('x')
-		}: ${
-			(this.subMenu !== SubMenu.NONE ? chalk.bold.black : _ => _)('Clear Tasks')
-		}\
-`);
+			getTheme().hotkey('x')
+		}${getTheme().normal(': ')}${
+			(this.subMenu !== SubMenu.NONE ? getTheme().normal : getTheme().selected)('Clear Tasks')
+		}`);
 
 	}
 
 	renderTopBar() {
 		const idlers = Game.current.pawns.filter(pawn => pawn.idle);
-		return ` ${Game.current.clock.render()}{|}Idle: ${idlers.length} `;
+		return ` ${Game.current.clock.render()}{|}${getTheme().normal(`Idle: ${idlers.length}`)} `;
 	}
 
 	renderPawns() {
@@ -134,10 +136,10 @@ export class Menu implements Renderable {
 				const selected = pawn === Game.current.selected;
 				let str = '';
 				if(selected) {
-					str += ` ${tags.white.fg} ❯ ${pawn.toString()}${tags.reset}{|}${pawn.status} \n`;
-					str += `    Energy{|}${progressbar(pawn.energy / 100, (menuPanel.width - 4) / 2)} \n`;
+					str += ` ${getTheme().selected(` ❯ ${pawn.toString()}`)}{|}${pawn.status} \n`;
+					str += `    ${getTheme().normal('Energy')}{|}${progressbar(pawn.energy / 100, (menuPanel.width - 4) / 2)} \n`;
 				} else {
-					str += ` ${tags.bright}${tags.black.fg}   ${pawn.toString()}${tags.reset}{|}${pawn.status} `;
+					str += `    ${getTheme().normal(pawn.toString())}{|}${pawn.status} `;
 				}
 				return str;
 			})()}`).join('\n')
@@ -152,9 +154,9 @@ export class Menu implements Renderable {
 		}${(() => {
 			return Object.values(View).map(view => {
 				if(view === this.view) {
-					return chalk.cyan.inverse(` ${view} `);
+					return getTheme().tab.selected(` ${view} `);
 				} else {
-					return chalk.cyan(` ${view} `);
+					return getTheme().tab.normal(` ${view} `);
 				}
 			}).join('');
 		})()}{/center}\n\n${(() => {
@@ -169,10 +171,10 @@ export class Menu implements Renderable {
 	multiplayerSelected = 0;
 
 	renderMultiplayer() {
-		if(mdns.players.length === 0) return `{center}${tags.bright}${tags.black.fg}No friends online{/center}`;
+		if(mdns.players.length === 0) return `{center}${getTheme().normal('No friends online')}{/center}`;
 		return mdns.players.map((player, i) => {
-			if(i === this.multiplayerSelected) return '  ❯ ' + player.toString();
-			else return '    ' + chalk.bold.black(player.toString());
+			if(i === this.multiplayerSelected) return ' ' + getTheme().selected(' ❯ ' + player.toString());
+			else return '    ' + getTheme().normal(player.toString());
 		}).join('\n');
 	}
 
@@ -184,7 +186,7 @@ export class Menu implements Renderable {
 		return `${(() => {
 			switch(this.subMenu) {
 				case SubMenu.NONE:
-					return `{center}${tags.bright}${tags.black.fg}* Select a menu above for options *`;
+					return `{center}${getTheme().normal('* Select a menu above for options *')}{/center}`;
 				case SubMenu.TREES:
 					return this.renderTreesSubMenu();
 			}
@@ -194,15 +196,15 @@ export class Menu implements Renderable {
 	renderTreesSubMenu() {
 		return [
 			`{center}Chop Trees`,
-			`{left}  ${chalk.greenBright('-=_+')}: ${this.trees}`,
-			`{left}  ${chalk.greenBright('enter')}: Create Task`,
-			`{left}  ${chalk.greenBright('escape')}: Cancel`
+			`{left}  ${getTheme().hotkey('-=_+')}: ${this.trees}`,
+			`{left}  ${getTheme().hotkey('enter')}: Create Task`,
+			`{left}  ${getTheme().hotkey('escape')}: Cancel`
 		].join('\n');
 	}
 
 	render() {
 		const width = menuPanel.width - 2;
-		const hr = chalk.bold.black('━'.repeat(width));
+		const hr = getTheme().normal('━'.repeat(width));
 		const content = [
 			this.renderTopBar(),
 			hr,

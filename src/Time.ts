@@ -2,6 +2,7 @@ import chalk from "chalk";
 import { Serializable } from "frigid";
 import { isThisTypeNode } from "typescript";
 import log from "./log.js";
+import { getTheme } from "./ui/Theme.js";
 import { Renderable } from "./ui/UI.js";
 
 const daysInMonth = [
@@ -18,7 +19,7 @@ const months = [
 	'Oct', 'Nov', 'Dec'
 ]
 
-export default class Time extends Serializable implements Renderable{
+export default class Time extends Serializable implements Renderable {
 	rate: number;
 	paused = true;
 
@@ -56,10 +57,22 @@ export default class Time extends Serializable implements Renderable{
 
 	render() {
 		const sym = (this.hour >= 6 && this.hour < 20) ?
-			chalk.yellowBright('☼') :
-			chalk.blue('☾')
+			chalk.ansi256(226).bgAnsi256(27)(' ⬤ ') :
+			chalk.ansi256(254).bgAnsi256(17)(' ☾ ')
 
-		return `${sym} ${this.hour.toString().padStart(2, ' ')}:${this.minute.toString().padStart(2, '0')} ${months[this.month]} ${this.day + 1}, ${this.normalizedYear}`
+		return `${sym} ${
+			getTheme().normal(`${
+				this.hour.toString().padStart(2, ' ')
+			}:${
+				this.minute.toString().padStart(2, '0')
+			} ${
+				months[this.month]
+			} ${
+				this.day + 1
+			}, ${
+				this.normalizedYear
+			}`)
+		}`;
 
 		// return '☾' || '☼';
 	}

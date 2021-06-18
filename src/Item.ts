@@ -1,5 +1,6 @@
 import { Serializable } from 'frigid';
-import { Renderable } from './ui/UI';
+import { getTheme } from './ui/Theme.js';
+import { Renderable } from './ui/UI.js';
 
 export type ItemID = string;
 
@@ -41,6 +42,6 @@ export class ItemState extends Serializable implements Renderable {
 	}
 
 	render() {
-		return ` ${this.item.name}{|}${this.qty} `;
+		return getTheme().normal(` ${this.item.name}{|}${this.qty} `);
 	}
 }

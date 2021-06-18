@@ -4,6 +4,7 @@ import { Game } from '../Game.js';
 import { ItemState } from '../Item.js';
 import { Player } from "../multiplayer/Player";
 import { Pawn } from '../Pawn.js';
+import { getTheme } from './Theme.js';
 import { boxStyle, screen } from './UI.js';
 
 export class GiftPopup {
@@ -68,7 +69,7 @@ export class GiftPopup {
 		this.box.setContent(`${(() => {
 			let pawns = [];
 			for (const [pawn, qty] of this.pawns.entries()) {
-				const style = i === this.selected ? chalk.underline : _ => _;
+				const style = i === this.selected ? getTheme().selected : getTheme().normal;
 				if(qty > 0) {
 					pawns.push(style(`{|}${pawn.toString()}  `))
 				} else {
@@ -78,7 +79,7 @@ export class GiftPopup {
 				i ++;
 			}
 			return pawns.join('\n')
-		})()}\n\n{|}${chalk.green('escape')}: Cancel \n{|}${chalk.green('enter')}: Okay `);
+		})()}\n\n{|}${getTheme().hotkey('escape')}${getTheme().normal(': Cancel ')}\n{|}${getTheme().hotkey('enter')}${getTheme().normal(': Okay ')}`);
 		screen.render();
 	}
 }

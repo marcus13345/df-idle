@@ -1,41 +1,26 @@
 
 import blessed from 'neo-blessed';
 import ansi from 'sisteransi';
+import { getTheme } from './Theme.js';
 
 export const screen = blessed.screen({
-	smartCSR: true
+	smartCSR: true,
+	terminal: 'xterm-256color'
 });
 
 export interface Renderable {
 	render: () => void
 }
 
-const fg = (color) => '{' + color + '-fg}';
-const bg = (color) => '{' + color + '-bg}';
-const color = (color) => { return { fg: fg(color), bg: bg(color) } }
-
-export const tags = {
-	black: color('black'),
-	red: color('red'),
-	green: color('green'),
-	yellow: color('yellow'),
-	blue: color('blue'),
-	magenta: color('magenta'),
-	cyan: color('cyan'),
-	white: color('white'),
-	reset: '{/}',
-	bright: '{bold}'
-};
-
 export const boxStyle = () => {
 	return {
 		style: {
 			border: {
-				fg: 'white'
+				fg: getTheme().border.normal
 			},
 			focus: {
 				border: {
-					fg: 'cyan'
+					fg: getTheme().border.focused
 				}
 			}
 		},
@@ -79,7 +64,7 @@ const titleBar = blessed.box({
 });
 
 export function setTitle(title) {
-	titleBar.setContent(`  ${title}{|}{bold}{black-fg}v0.1.0      {/}`);
+	titleBar.setContent(`  ${getTheme().header(title)}{|}${getTheme().subheader('v0.1.0')}      {/}`);
 }
 
 setTitle('');
@@ -94,7 +79,9 @@ process.stdout.write(ansi.cursor.hide);
 
 screen.key(['C-c'], function(ch, key) {
 	process.stdout.write(ansi.cursor.show);
-  return process.exit(0);
+	setTimeout(_ => {
+		process.exit(0);
+	})
 });
 
 tasksPanel.key('f2', () => {

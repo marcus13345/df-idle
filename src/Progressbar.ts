@@ -1,19 +1,27 @@
 import chalk from "chalk";
+import { getTheme } from "./ui/Theme.js";
 
 export enum ProgressbarStyle {
 	indicator = 'indicator',
 	progress = 'progress'
 }
 
-export function progressbar(completion, width, style: ProgressbarStyle = ProgressbarStyle.indicator) {
+export const barCache: Map<string, string> = new Map();
+
+export function progressbar(completion: number, width: number, style: ProgressbarStyle = ProgressbarStyle.indicator) {
+	const cacheKey = `${completion}-${width}-${style}`;
+	if(barCache.has(cacheKey)) {
+		stats.cacheHits ++;
+		return barCache.get(cacheKey);
+	}
 	let chalkFn
 	if(style === ProgressbarStyle.indicator) {
-		if(completion > 0.8) chalkFn = chalk.bgBlue.cyan;
-		else if(completion > 0.5) chalkFn = chalk.bgBlue.green;
-		else if(completion > 0.2) chalkFn = chalk.bgBlue.yellow;
-		else chalkFn = chalk.bgBlue.red;
+		if(completion > getTheme().progressBar.indicator.buckets[2]) chalkFn = getTheme().progressBar.indicator.excellent;
+		else if(completion > getTheme().progressBar.indicator.buckets[1]) chalkFn = getTheme().progressBar.indicator.normal;
+		else if(completion > getTheme().progressBar.indicator.buckets[0]) chalkFn = getTheme().progressBar.indicator.warning;
+		else chalkFn = getTheme().progressBar.indicator.critical;
 	} else if(style === ProgressbarStyle.progress) {
-		chalkFn = chalk.bgBlue.cyan;
+		chalkFn = getTheme().progressBar.normal;
 	}
 	const chars = [' ', '▏', '▎', '▍', '▌', '▋', '▊', '▉', '█'];
 	let str = '';
@@ -22,5 +30,12 @@ export function progressbar(completion, width, style: ProgressbarStyle = Progres
 		const char = chars[remainder];
 		str += chalkFn(char);
 	}
+	stats.cacheMisses ++;
+	barCache.set(cacheKey, str);
 	return str;
+}
+
+export const stats = {
+	cacheHits: 0,
+	cacheMisses: 0
 }

@@ -54,7 +54,7 @@ export async function ready(name, onThing?) {
 				})
 				pawns.push(pawn);
 			}
-			new Popup(`${(() => {
+			Popup.show(`${(() => {
 				if(pawns.length === 0) return `A care package has arrived from ${from}.`;
 				if(pawns.length === 1) return `A traveler from ${from} named ${pawns[0].toString()} has arrived.`;
 				if(pawns.length > 1) return `A caravan of ${pawns.length} people from ${from} has arrived.`

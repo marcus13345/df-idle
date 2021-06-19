@@ -11,22 +11,25 @@
     "@types/uuid": "^8.3.0",
     "bonjour": "^3.5.0",
     "chalk": "^4.1.1",
+    "deepmerge": "^4.2.2",
     "faker": "^5.5.3",
     "frigid": "^1.3.8",
     "fs-extra": "^10.0.0",
     "get-port": "^5.1.1",
     "logger": "^0.0.1",
+    "module-alias": "^2.2.2",
     "neo-blessed": "^0.2.0",
     "printable-characters": "^1.0.42",
     "sisteransi": "^1.0.5",
     "typescript": "^4.3.2",
     "uuid": "^8.3.2",
+    "walk-sync": "^3.0.0",
     "ws": "^7.4.6",
     "yarn": "^1.22.10"
   },
   "scripts": {
     "compile:watch": "tsc --watch",
-    "start": "node --enable-source-maps out/index.js",
+    "start": "node --loader ./lib/aliases.mjs --enable-source-maps out/src/index.js",
     "dev": "supervisor -w out -n exit -t -k --exec yarn -- start",
     "prod": "git fetch && git pull && yarn && tsc && yarn start"
   }

@@ -58,7 +58,7 @@ export default class Time extends Serializable implements Renderable {
 
   render() {
     const sym = (this.hour >= 6 && this.hour < 20) ?
-      chalk.ansi256(226).bgAnsi256(27)(' ☀ ') :
+      chalk.ansi256(226).bgAnsi256(27)(' ☼ ') :
       chalk.ansi256(254).bgAnsi256(17)(' ☾ ')
 
     return `${sym} ${
@@ -74,8 +74,6 @@ export default class Time extends Serializable implements Renderable {
         this.normalizedYear
       }`)
     }`;
-
-    // return '☾' || '☼';
   }
 
   toString() {

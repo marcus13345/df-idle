@@ -7,6 +7,7 @@ import { ChopTreeTask } from './tasks/ChopTreeTask.js';
 import { Game } from './Game.js';
 import { render } from './ui/UI.js';
 import { Memory } from './Memory.js';
+import { getTheme } from './ui/Theme.js';
 
 const LABORS = {
   CUT_TREE: Symbol('CUT_TREE'),
@@ -127,7 +128,7 @@ export class Pawn extends Serializable implements Tickable {
     if(this.job) {
       return this.job.status;
     } else {
-      return this.awake ? chalk.bold.black('IDLE') : chalk.blue('RESTING')
+      return this.awake ? getTheme().status.idle('IDLE') : getTheme().status.self('RESTING')
     }
   }
 

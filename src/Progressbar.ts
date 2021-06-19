@@ -23,7 +23,19 @@ export function progressbar(completion: number, width: number, style: Progressba
 	} else if(style === ProgressbarStyle.progress) {
 		chalkFn = getTheme().progressBar.normal;
 	}
-	const chars = [' ', '▏', '▎', '▍', '▌', '▋', '▊', '▉', '█'];
+	
+	const chars = [
+		'\u0020',
+		'\u258f',
+		'\u258e',
+		'\u258d',
+		'\u258c',
+		'\u258b',
+		'\u258a',
+		'\u2589',
+		'\u2588'
+	];
+
 	let str = '';
 	for(let i = 0; i < width; i ++) {
 		const remainder = Math.floor(Math.min(Math.max(0, (completion * width) - i), 1) * 8);

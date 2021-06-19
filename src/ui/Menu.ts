@@ -10,22 +10,30 @@ import { GiftPopup } from './GiftPopup.js';
 import { PawnDetails } from './PawnDetails.js';
 import { defaultTheme, getTheme } from './Theme.js';
 import { inspect } from 'util';
+import PawnsView from './view/PawnsView.js';
+import InventoryView from './view/InventoryView.js';
+import MultiplayerView from './view/MultiplayerView.js';
 
-enum SubMenu {
-	NONE = 'NONE',
-	TREES = 'TREES'
-};
+// TODO extract View
+export abstract class View implements Renderable, KeypressAcceptor {
+	abstract render(): void;
+	abstract keypress(key: {full: string}): void;
 
-enum View {
-	PAWNS = 'Pawns',
-	INVENTORY = 'Inventory',
-	MULTIPLAYER = 'Multiplayer',
-};
+	static PAWNS: View = new PawnsView();
+	static INVENTORY: View = new InventoryView();
+	static MULTIPLAYER: View = new MultiplayerView();
+
+	name: string
+}
+
+// TODO move KeypressAcceptor to ui something idk
+export interface KeypressAcceptor {
+	keypress(key: {full: string}): void
+}
 
 export class Menu implements Renderable {
 
 	trees: number = 10;
-	subMenu: SubMenu = SubMenu.NONE;
 	view: View = View.PAWNS;
 
 	constructor() {
@@ -36,93 +44,41 @@ export class Menu implements Renderable {
 				this.view = View[Object.keys(View)[Math.min(Math.max(Object.values(View).indexOf(this.view) - 1, 0), Object.keys(View).length - 1)]]
 			} else if (key.full === 'right') {
 				this.view = View[Object.keys(View)[Math.min(Math.max(Object.values(View).indexOf(this.view) + 1, 0), Object.keys(View).length - 1)]]
-			} else if (key.full === 'q') {
-				this.subMenu = SubMenu.TREES;
+			
+			// debugging hotkeys
 			} else if (key.full === '1') {
 				Popup.show(inspect(stats));
-			} else if (key.full === '2') {
-				Popup.show('Etiam hendrerit elit sit amet metus congue dictum nec eu lacus. Sed aliquam in justo efficitur faucibus. Duis tellus diam, congue volutpat lorem et, semper consectetur erat. Nunc ac velit dignissim, tincidunt augue eget, tristique orci. Duis lacus sapien, bibendum id pharetra vel, semper et nunc. Vestibulum eu tellus imperdiet, lacinia ante ac, porta nisl. Donec at eleifend risus, ac dictum odio.');
-			} else if (key.full === 'escape') {
-				this.subMenu = SubMenu.NONE;
+			} else if (key.full === 'z') {
+				Game.current.pawns.push(new Pawn());
+			} else if (key.full === 'x') {
+				Game.current.board.clear();
 			}
 
-			if(this.view === View.PAWNS) {
-				if (key.full === 'delete') {
-					Game.current.removePawn(Game.current.selected);
-				} else if (key.full === 'up') {
-					Game.current.advanceSelection(-1);
-				} else if (key.full === 'down') {
-					Game.current.advanceSelection(1);
-				} else if (key.full === 'enter') {
-					new PawnDetails(Game.current.selected);
-				}
-			}
+			// if(this.view === View.PAWNS) {
+			// 	if (key.full === 'delete') {
+			// 		Game.current.removePawn(Game.current.selected);
+			// 	} else if (key.full === 'up') {
+			// 		Game.current.advanceSelection(-1);
+			// 	} else if (key.full === 'down') {
+			// 		Game.current.advanceSelection(1);
+			// 	} else if (key.full === 'enter') {
+			// 		new PawnDetails(Game.current.selected);
+			// 	}
+			// }
 
-			if(this.view === View.MULTIPLAYER) {
-				if (key.full === 'enter') {
-					new GiftPopup(mdns.players[this.multiplayerSelected]);
-					// mdns.players[this.multiplayerSelected].sendItem(null);
-				} else if (key.full === 'up') {
-					this.multiplayerSelected --;
-				} else if (key.full === 'down') {
-					this.multiplayerSelected ++;
-				}
-			}
+			// if(this.view === View.MULTIPLAYER) {
+			// 	if (key.full === 'enter') {
+			// 		new GiftPopup(mdns.players[this.multiplayerSelected]);
+			// 		// mdns.players[this.multiplayerSelected].sendItem(null);
+			// 	} else if (key.full === 'up') {
+			// 		this.multiplayerSelected --;
+			// 	} else if (key.full === 'down') {
+			// 		this.multiplayerSelected ++;
+			// 	}
+			// }
 
-			if(this.subMenu === SubMenu.TREES) {
-				if (key.full === '=') {
-					this.trees ++;
-				} else if (key.full === '-') {
-					this.trees --;
-					this.trees = Math.max(this.trees, 1);
-				} else if (key.full === '+') {
-					this.trees += 10;
-				} else if (key.full === '_') {
-					this.trees -= 10;
-					this.trees = Math.max(this.trees, 1);
-				} else if (key.full === 'enter') {
-					for(let i = 0; i < this.trees; i ++) {
-						Game.current.board.addTask(new ChopTreeTask(1));
-					}
-					this.subMenu = SubMenu.NONE;
-				}
-			} else if(this.subMenu === SubMenu.NONE) {
-				if (key.full === 'z') {
-					Game.current.pawns.push(new Pawn());
-				} else if (key.full === 'x') {
-					Game.current.board.clear();
-				}
-			}
-
-			// const pawn = new Pawn();
-			// Game.current.pawns.push(pawn);
 			Game.current.sync();
 		});
-	}
-
-	renderJobs() {
-
-		const colSpace = ((menuPanel.width - 2) / 2);
-
-		return (`    ${getTheme().header('Menus')}${getTheme().normal(':')}${
-			' '.repeat(colSpace - 8)
-		}${getTheme().header('Actions')}${getTheme().normal(':')}\n  ${
-			getTheme().hotkey('q')
-		}${getTheme().normal(': ')}${
-			(this.subMenu !== SubMenu.TREES ? getTheme().normal : getTheme().selected)('Chop Trees')
-		}${
-			' '.repeat(colSpace - 15)
-		}${getTheme().hotkey('z')}${getTheme().normal(': ')}${
-			(this.subMenu !== SubMenu.NONE ? getTheme().normal : getTheme().selected)('Create Pawn')
-
-		}\n${
-			' '.repeat(colSpace)
-		}${
-			getTheme().hotkey('x')
-		}${getTheme().normal(': ')}${
-			(this.subMenu !== SubMenu.NONE ? getTheme().normal : getTheme().selected)('Clear Tasks')
-		}`);
-
 	}
 
 	renderTopBar() {
@@ -160,11 +116,7 @@ export class Menu implements Renderable {
 				}
 			}).join('');
 		})()}{/center}\n\n${(() => {
-			switch(this.view) {
-				case View.PAWNS: return this.renderPawns();
-				case View.INVENTORY: return this.renderInv();
-				case View.MULTIPLAYER: return this.renderMultiplayer();
-			}
+			this.view.view.render();
 		})()}`
 	}
 
@@ -180,17 +132,6 @@ export class Menu implements Renderable {
 
 	renderInv() {
 		return Game.current.inv.render();
-	}
-
-	renderSubMenu() {
-		return `${(() => {
-			switch(this.subMenu) {
-				case SubMenu.NONE:
-					return `{center}${getTheme().normal('* Select a menu above for options *')}{/center}`;
-				case SubMenu.TREES:
-					return this.renderTreesSubMenu();
-			}
-		})()}`;
 	}
 
 	renderTreesSubMenu() {
@@ -209,10 +150,6 @@ export class Menu implements Renderable {
 			this.renderTopBar(),
 			hr,
 			this.renderView(),
-			hr,
-			this.renderJobs(),
-			hr,
-			this.renderSubMenu()
 		].join('\n');
 		menuPanel.setContent(content);
 	}

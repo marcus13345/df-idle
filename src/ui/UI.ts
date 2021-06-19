@@ -9,9 +9,10 @@ export const screen = blessed.screen({
 });
 
 export interface Renderable {
-	render: () => void
+	render(): void
 }
 
+// TODO move this to theme
 export const boxStyle = () => {
 	return {
 		style: {

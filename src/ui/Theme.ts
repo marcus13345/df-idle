@@ -35,8 +35,8 @@ export const defaultTheme: Theme = {
 	selected: chalk.ansi256(250),
 	hotkey: chalk.ansi256(40),
 	tab: {
-		normal: chalk.ansi256(117).bgAnsi256(232),
-		selected: chalk.ansi256(232).bgAnsi256(117)
+		normal: chalk.ansi256(117),
+		selected: chalk.ansi256(117).inverse
 	},
 	border: {
 		focused: '#ffffff',

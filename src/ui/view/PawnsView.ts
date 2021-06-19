@@ -1,4 +1,4 @@
-import { View } from "../Menu.js";
+import { View } from "../View.js";
 
 export default class PawnsView extends View {
 	constructor() {

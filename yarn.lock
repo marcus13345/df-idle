@@ -210,6 +210,7 @@ multicast-dns@^6.0.1:
 neo-blessed@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/neo-blessed/-/neo-blessed-0.2.0.tgz#30f9495fdd104494402b62c6273a9c9b82de4f2b"
+  integrity sha512-C2kC4K+G2QnNQFXUIxTQvqmrdSIzGTX1ZRKeDW6ChmvPRw8rTkTEJzbEQHiHy06d36PCl/yMOCjquCRV8SpSQw==
 
 object-is@^1.0.1:
   version "1.1.5"

@@ -2,29 +2,17 @@ import { Pawn } from '../Pawn.js';
 import log from '../log.js';
 import { menuPanel, Renderable } from './UI.js';
 import { Game } from '../Game.js';
-import { ChopTreeTask } from '../tasks/ChopTreeTask.js';
-import { progressbar, stats, barCache } from '../Progressbar.js';
+import { progressbar, stats } from '../Progressbar.js';
 import { Popup } from './Popup.js';
 import mdns from '../multiplayer/mDNS.js';
-import { GiftPopup } from './GiftPopup.js';
-import { PawnDetails } from './PawnDetails.js';
-import { defaultTheme, getTheme } from './Theme.js';
+import { getTheme } from './Theme.js';
 import { inspect } from 'util';
 import PawnsView from './view/PawnsView.js';
 import InventoryView from './view/InventoryView.js';
 import MultiplayerView from './view/MultiplayerView.js';
+import { View } from './View.js';
 
-// TODO extract View
-export abstract class View implements Renderable, KeypressAcceptor {
-	abstract render(): void;
-	abstract keypress(key: {full: string}): void;
-
-	static PAWNS: View = new PawnsView();
-	static INVENTORY: View = new InventoryView();
-	static MULTIPLAYER: View = new MultiplayerView();
-
-	name: string
-}
+const clamp = (min, max, value) => Math.min(Math.max(value, min), max);
 
 // TODO move KeypressAcceptor to ui something idk
 export interface KeypressAcceptor {
@@ -34,16 +22,35 @@ export interface KeypressAcceptor {
 export class Menu implements Renderable {
 
 	trees: number = 10;
-	view: View = View.PAWNS;
+	viewIndex: number = 0;
+	views: View[] = [
+		new PawnsView(),
+		new InventoryView(),
+		new MultiplayerView()
+	]
+
+	get view() {
+		return this.views[this.viewIndex];
+	}
+
+	advanceView() {
+		this.viewIndex ++;
+		this.viewIndex = clamp(0, this.views.length - 1, this.viewIndex);
+	}
+
+	regressView() {
+		this.viewIndex --;
+		this.viewIndex = clamp(0, this.views.length - 1, this.viewIndex);
+	}
 
 	constructor() {
 		menuPanel.on('keypress', (evt, key) => {
 			log.info('keypress', key);
 			
 			if (key.full === 'left') {
-				this.view = View[Object.keys(View)[Math.min(Math.max(Object.values(View).indexOf(this.view) - 1, 0), Object.keys(View).length - 1)]]
+				this.regressView();
 			} else if (key.full === 'right') {
-				this.view = View[Object.keys(View)[Math.min(Math.max(Object.values(View).indexOf(this.view) + 1, 0), Object.keys(View).length - 1)]]
+				this.advanceView();
 			
 			// debugging hotkeys
 			} else if (key.full === '1') {
@@ -116,7 +123,7 @@ export class Menu implements Renderable {
 				}
 			}).join('');
 		})()}{/center}\n\n${(() => {
-			this.view.view.render();
+			this.view.render();
 		})()}`
 	}
 

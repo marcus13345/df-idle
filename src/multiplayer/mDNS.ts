@@ -30,7 +30,7 @@ export type GiftMessage = {
 
 export default network;
 
-export async function ready(name, onThing?) {
+export async function ready(name) {
 	const port = await getPort({port: getPort.makeRange(52300, 52399)});
 	mdns.publish({
 		type: 'dfi',
@@ -73,4 +73,6 @@ mdns.find({
 	p.port = service.port;
 	log.info('Found player', p);
 	devices.push(p);
-});
+}).on("down", (service) => {
+	// TODO remove player from MP
+})

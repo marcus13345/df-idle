@@ -59,19 +59,7 @@ export class Menu implements Renderable {
 				Game.current.pawns.push(new Pawn());
 			} else if (key.full === 'x') {
 				Game.current.board.clear();
-			}
-
-			// if(this.view === View.PAWNS) {
-			// 	if (key.full === 'delete') {
-			// 		Game.current.removePawn(Game.current.selected);
-			// 	} else if (key.full === 'up') {
-			// 		Game.current.advanceSelection(-1);
-			// 	} else if (key.full === 'down') {
-			// 		Game.current.advanceSelection(1);
-			// 	} else if (key.full === 'enter') {
-			// 		new PawnDetails(Game.current.selected);
-			// 	}
-			// }
+			} else this.view.keypress(key);
 
 			// if(this.view === View.MULTIPLAYER) {
 			// 	if (key.full === 'enter') {
@@ -84,6 +72,8 @@ export class Menu implements Renderable {
 			// 	}
 			// }
 
+			// TODO add colortest debug screen!
+
 			Game.current.sync();
 		});
 	}
@@ -93,61 +83,19 @@ export class Menu implements Renderable {
 		return ` ${Game.current.clock.render()}{|}${getTheme().normal(`Idle: ${idlers.length}`)} `;
 	}
 
-	renderPawns() {
-		return `${
-			Game.current.pawns.map(pawn => `${(function() {
-				const selected = pawn === Game.current.selected;
-				let str = '';
-				if(selected) {
-					str += ` ${getTheme().selected(` ❯ ${pawn.toString()}`)}{|}${pawn.status} \n`;
-					str += `    ${getTheme().normal('Energy')}{|}${progressbar(pawn.energy / 100, (menuPanel.width - 4) / 2)} \n`;
-				} else {
-					str += `    ${getTheme().normal(pawn.toString())}{|}${pawn.status} `;
-				}
-				return str;
-			})()}`).join('\n')
-		}`;
-	}
-
 	renderView() {
 		const colSpace = ((menuPanel.width - 2) / 2);
-		return `${
-			// ' '.repeat(colSpace - 20)
-			'{center}'
-		}${(() => {
-			return Object.values(View).map(view => {
-				if(view === this.view) {
-					return getTheme().tab.selected(` ${view} `);
+		return `{center}${(() => {
+			return Object.values(this.views).map((view, idx) => {
+				if(idx === this.viewIndex) {
+					return getTheme().tab.selected(` ${view.name} `);
 				} else {
-					return getTheme().tab.normal(` ${view} `);
+					return getTheme().tab.normal(` ${view.name} `);
 				}
 			}).join('');
-		})()}{/center}\n\n${(() => {
-			this.view.render();
-		})()}`
-	}
-
-	multiplayerSelected = 0;
-
-	renderMultiplayer() {
-		if(mdns.players.length === 0) return `{center}${getTheme().normal('No friends online')}{/center}`;
-		return mdns.players.map((player, i) => {
-			if(i === this.multiplayerSelected) return ' ' + getTheme().selected(' ❯ ' + player.toString());
-			else return '    ' + getTheme().normal(player.toString());
-		}).join('\n');
-	}
-
-	renderInv() {
-		return Game.current.inv.render();
-	}
-
-	renderTreesSubMenu() {
-		return [
-			`{center}Chop Trees`,
-			`{left}  ${getTheme().hotkey('-=_+')}: ${this.trees}`,
-			`{left}  ${getTheme().hotkey('enter')}: Create Task`,
-			`{left}  ${getTheme().hotkey('escape')}: Cancel`
-		].join('\n');
+		})()}{/center}\n\n${
+			this.view.render()
+		}`;
 	}
 
 	render() {

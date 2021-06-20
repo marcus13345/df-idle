@@ -1,3 +1,4 @@
+import { Game } from "../../Game.js";
 import { View } from "../View.js";
 
 export default class InventoryView extends View {
@@ -5,6 +6,9 @@ export default class InventoryView extends View {
 		super();
 		this.name = 'Inventory';
 	}
-	keypress: (key: { full: string; }) => void;
-	render() { void 0 };
+	keypress(key: { full: string; }) {}
+
+	render() {
+		return Game.current.inv.render();
+	};
 }

@@ -1,7 +1,7 @@
 import { GiftPopup } from "../GiftPopup.js";
 import { View } from "../View.js"
 import mdns from '../../multiplayer/mDNS.js';
-import { getTheme } from "@theme";
+import { getTheme } from "@themes";
 
 export default class MultiplayerView extends View {
 	

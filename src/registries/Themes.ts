@@ -7,7 +7,6 @@
 import chalk from 'chalk';
 chalk.level = 2;
 import merge from 'deepmerge';
-import log from '../log.js';
 
 type StyleFunction = (text: string) => string;
 
@@ -79,7 +78,7 @@ let currentTheme = backupTheme;
 const themes: Map<ThemeName, Theme> = new Map();
 
 export function registerTheme(name: ThemeName, theme: Partial<Theme>) {
-  log.info('registering theme', name)
+  console.log('Registered theme', name);
   themes.set(name, merge(backupTheme, theme));
 }
 

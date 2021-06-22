@@ -1,8 +1,6 @@
 import { Serializable } from 'frigid';
-import { ChopTreeTask } from "./tasks/ChopTreeTask.js";
-import { Game } from './Game.js';
-import { Task } from "./tasks/Task.js";
-import { render, Renderable, tasksPanel } from './ui/UI.js';
+import { Task, taskClasses } from './registries/Tasks.js';
+import { render, Renderable, panels } from './ui/UI.js';
 
 export class TaskList extends Serializable implements Renderable {
 	tasks: Task[] = [];
@@ -14,10 +12,16 @@ export class TaskList extends Serializable implements Renderable {
 	}
 
 	static serializationDependencies() {
-		return [ChopTreeTask, Task];
+		return Array.from(taskClasses.values());
 	}
 
-	addTask(task) {
+	addTask({taskId, options}: TaskOptions) {
+    if(!taskClasses.has(taskId))
+      throw new Error('unknown task: ' + taskId);
+
+    const taskClass = taskClasses.get(taskId);
+    const task = new taskClass();
+    
 		this.tasks = [...this.tasks, task];
 	}
 
@@ -27,9 +31,19 @@ export class TaskList extends Serializable implements Renderable {
 
 	render() {
 		// const width = tasksPanel.width;
-		tasksPanel.setContent(`${this.tasks.map(task => {
+		panels.left.setContent(`${this.tasks.map(task => {
 			return task.toString();
 		}).join('\n')}`);
 		// return this.tasks.map(task => task.toString()).join('\n');
 	}
+}
+
+const taskTypes = {};
+export function registerTask(name, clazz) {
+  taskTypes[name] = clazz;
+}
+
+export type TaskOptions = {
+  taskId: string,
+  options: any
 }

@@ -1,8 +1,8 @@
-import { getTheme } from "@theme";
+import { getTheme } from "@themes";
 import { Game } from "../../Game.js";
 import { progressbar } from "../../Progressbar.js";
 import { PawnDetails } from "../PawnDetails.js";
-import { menuPanel } from "../UI.js";
+import { panels } from "../UI.js";
 import { View } from "../View.js";
 
 export default class PawnsView extends View {
@@ -30,7 +30,7 @@ export default class PawnsView extends View {
 				let str = '';
 				if(selected) {
 					str += ` ${getTheme().selected(` ❯ ${pawn.toString()}`)}{|}${pawn.status} \n`;
-					str += `    ${getTheme().normal('Energy')}{|}${progressbar(pawn.energy / 100, (menuPanel.width - 4) / 2)} \n`;
+					str += `    ${getTheme().normal('Energy')}{|}${progressbar(pawn.energy / 100, (panels.right.width - 4) / 2)} \n`;
 				} else {
 					str += `    ${getTheme().normal(pawn.toString())}{|}${pawn.status} `;
 				}

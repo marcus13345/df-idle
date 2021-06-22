@@ -4,7 +4,7 @@ import { Game } from '../Game.js';
 import { stringify } from '../Memory.js';
 import { Pawn } from '../Pawn.js';
 import Time from '../Time.js';
-import { boxStyle, screen } from './UI.js';
+import { boxStyle, panels } from './UI.js';
 
 export class PawnDetails {
 	box;
@@ -23,7 +23,7 @@ export class PawnDetails {
 		this.box.on('keypress', (evt, key) => {
 			if(key.full === 'escape' || key.full === 'enter') {
 				Game.current.clock.start();
-				screen.remove(this.box);
+				panels.screen.remove(this.box);
 			} else if (key.full === 'up') {
 				// this.selected --;
 			} else if (key.full === 'down') {
@@ -36,7 +36,7 @@ export class PawnDetails {
 			this.render();
 		});
 		this.render();
-		screen.append(this.box);
+		panels.screen.append(this.box);
 		this.box.focus();
 		Game.current.clock.pause();
 	}
@@ -55,6 +55,6 @@ export class PawnDetails {
 		}: Cancel \n{|}${
 			chalk.green('enter')
 		}: Okay `);
-		screen.render();
+		panels.screen.render();
 	}
 }

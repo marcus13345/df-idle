@@ -1,13 +1,11 @@
 import { Serializable } from 'frigid';
 import faker from 'faker';
-import log from './log.js';
-import { Task } from './tasks/Task.js';
+import { Task } from './registries/Tasks.js';
 import Time, { Tickable } from './Time.js';
-import { ChopTreeTask } from './tasks/ChopTreeTask.js';
 import { Game } from './Game.js';
 import { render } from './ui/UI.js';
 import { Memory } from './Memory.js';
-import { getTheme } from './ui/Theme.js';
+import { getTheme } from './registries/Themes.js';
 
 const LABORS = {
   CUT_TREE: Symbol('CUT_TREE'),
@@ -81,7 +79,6 @@ export class Pawn extends Serializable implements Tickable {
   }
 
   ctor() {
-    log.info('Pawn::ctor')
     this.name ??= {
       first: faker.name.firstName(),
       last: faker.name.lastName()
@@ -132,8 +129,8 @@ export class Pawn extends Serializable implements Tickable {
     }
   }
 
-  static serializationDependencies() {
-    return [Task, ChopTreeTask]
+  static serializationDependencies(): (typeof Serializable)[] {
+    return [Task]
   }
 
   toString() {

@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { getTheme } from "./ui/Theme.js";
+import { getTheme } from "./registries/Themes.js";
 
 export enum ProgressbarStyle {
 	indicator = 'indicator',
@@ -9,7 +9,7 @@ export enum ProgressbarStyle {
 export const barCache: Map<string, string> = new Map();
 
 export function progressbar(completion: number, width: number, style: ProgressbarStyle = ProgressbarStyle.indicator) {
-	const cacheKey = `${completion}-${width}-${style}`;
+	const cacheKey = `${Math.round(completion * width * 8)}-${width}-${style}`;
 	if(barCache.has(cacheKey)) {
 		stats.cacheHits ++;
 		return barCache.get(cacheKey);

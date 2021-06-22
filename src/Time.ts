@@ -1,10 +1,9 @@
 import chalk from "chalk";
 import { Serializable } from "frigid";
-import { getTheme } from "./ui/Theme.js";
+import { getTheme } from "./registries/Themes.js";
 import { Renderable } from "./ui/UI.js";
 
 type AbbreviatedMonthName = string;
-
 
 const daysInMonth = [
   31, 28, 31,
@@ -63,21 +62,13 @@ export default class Time extends Serializable implements Renderable {
 
     return `${sym} ${
       getTheme().normal(`${
-        this.hour.toString().padStart(2, ' ')
-      }:${
-        this.minute.toString().padStart(2, '0')
-      } ${
-        months[this.month]
-      } ${
-        this.day + 1
-      }, ${
-        this.normalizedYear
+        this.toString()
       }`)
     }`;
   }
 
   toString() {
-    return `${this.hour}:${this.minute.toString().padStart(2, '0')} ${months[this.month]} ${this.day + 1}, ${this.normalizedYear}`
+    return `${this.hour}:${Math.floor(this.minute).toString().padStart(2, '0')} ${months[this.month]} ${this.day + 1}, ${this.normalizedYear}`
   }
 
   ctor() {
@@ -87,6 +78,10 @@ export default class Time extends Serializable implements Renderable {
     this.day ??= 0;
     this.month ??= 0;
     this.year ??= 0;
+  }
+
+  get second() {
+    return Math.floor((this.minute % 1) * 60)
   }
 
   get stamp() {
@@ -123,8 +118,8 @@ export default class Time extends Serializable implements Renderable {
     setTimeout(this.doTick.bind(this), 0);
   }
   
-  advanceTime(minutes) {
-    this.minute ++;
+  advanceTime(seconds) {
+    this.minute += seconds / 60;
     this.normalize()
   }
 
@@ -136,7 +131,10 @@ export default class Time extends Serializable implements Renderable {
     }
   }
 
+
+
   normalize() {
+    // while(t)
     while(this.minute >= 60) {
       this.minute -= 60;
       this.hour ++;
@@ -145,7 +143,6 @@ export default class Time extends Serializable implements Renderable {
       this.minute += 60;
       this.hour --;
     }
-
     while(this.hour >= 24) {
       this.hour -= 24;
       this.day ++;

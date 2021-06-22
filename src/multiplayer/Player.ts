@@ -1,4 +1,4 @@
-import { ItemState } from '../Item.js';
+import { ItemState } from '../registries/Items.js';
 import WebSocket from 'ws';
 import { Pawn } from '../Pawn.js';
 import { Game } from '../Game.js';

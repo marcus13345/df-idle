@@ -1,4 +1,4 @@
-import { registerTheme } from '@theme';
+import { registerTheme } from '@themes';
 import chalk from 'chalk'
 
 registerTheme("default", {});

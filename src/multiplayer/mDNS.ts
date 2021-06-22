@@ -1,11 +1,10 @@
 import bonjour from 'bonjour';
-import log from '../log.js';
 import getPort from 'get-port';
 import os from 'os'
 import * as uuid from 'uuid';
 import faker from 'faker';
 import chalk from 'chalk';
-import { Item } from '../Item.js';
+import { Item } from '../registries/Items.js';
 import WebSocket from 'ws';
 import { Popup } from '../ui/Popup.js';
 import { inspect } from 'util'
@@ -71,7 +70,6 @@ mdns.find({
 	p.name = service.name;
 	p.host = service.host;
 	p.port = service.port;
-	log.info('Found player', p);
 	devices.push(p);
 }).on("down", (service) => {
 	// TODO remove player from MP

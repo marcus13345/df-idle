@@ -2,13 +2,16 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "tsc watch",
+      "label": "build",
       "type": "npm",
       "script": "compile:watch",
       "isBackground": true,
       "group": {
         "kind": "build",
         "isDefault": true
+      },
+      "runOptions": {
+        "runOn": "folderOpen"
       },
       "presentation": {
         "reveal": "never",

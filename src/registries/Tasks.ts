@@ -5,9 +5,8 @@ import { Pawn } from '../Pawn.js';
 import { Game } from '../Game.js';
 import { panels } from '../ui/UI.js';
 import { progressbar, ProgressbarStyle } from '../Progressbar.js';
-import { Class } from '../Reflection.js';
 
-export const taskClasses: Map<string, Class<Task>> = new Map();
+export const taskClasses: Map<string, typeof Task> = new Map();
 
 export abstract class Task extends Serializable {
   progress = 0;
@@ -69,7 +68,7 @@ export abstract class Task extends Serializable {
   }
 }
 
-export function registerTask(id: string, taskClass: Class<Task>) {
+export function registerTask(id: string, taskClass: typeof Task) {
   console.log('Registered task', id);
   taskClasses.set(id, taskClass)
 }

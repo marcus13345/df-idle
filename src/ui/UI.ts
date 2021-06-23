@@ -1,4 +1,5 @@
 
+import chalk from 'chalk';
 import blessed from 'neo-blessed';
 import ansi from 'sisteransi';
 import { getTheme } from '../registries/Themes.js';
@@ -131,3 +132,25 @@ export function start() {
   started = true;
   setTitle('');
 }
+
+let ansiTestCard = '{center}';
+for(let i = 16; i < 34; i ++) ansiTestCard += chalk.bgAnsi256(i).black(` ${i.toString().padStart(3, ' ')} ${(i-15)%6===0?chalk.reset('     '):''}`); ansiTestCard += '\n';
+for(let i = 52; i < 70; i ++) ansiTestCard += chalk.bgAnsi256(i).black(` ${i.toString().padStart(3, ' ')} ${(i-15)%6===0?chalk.reset('     '):''}`); ansiTestCard += '\n';
+for(let i = 88; i < 106; i ++) ansiTestCard += chalk.bgAnsi256(i).black(` ${i.toString().padStart(3, ' ')} ${(i-15)%6===0?chalk.reset('     '):''}`); ansiTestCard += '\n';
+for(let i = 124; i < 142; i ++) ansiTestCard += chalk.bgAnsi256(i).black(` ${i.toString().padStart(3, ' ')} ${(i-15)%6===0?chalk.reset('     '):''}`); ansiTestCard += '\n';
+for(let i = 160; i < 178; i ++) ansiTestCard += chalk.bgAnsi256(i).black(` ${i.toString().padStart(3, ' ')} ${(i-15)%6===0?chalk.reset('     '):''}`); ansiTestCard += '\n';
+for(let i = 196; i < 214; i ++) ansiTestCard += chalk.bgAnsi256(i).black(` ${i.toString().padStart(3, ' ')} ${(i-15)%6===0?chalk.reset('     '):''}`); ansiTestCard += '\n';
+ansiTestCard += '\n';
+for(let i = 34; i < 52; i ++) ansiTestCard += chalk.bgAnsi256(i).black(` ${i.toString().padStart(3, ' ')} ${(i-15)%6===0?chalk.reset('     '):''}`); ansiTestCard += '\n';
+for(let i = 70; i < 88; i ++) ansiTestCard += chalk.bgAnsi256(i).black(` ${i.toString().padStart(3, ' ')} ${(i-15)%6===0?chalk.reset('     '):''}`); ansiTestCard += '\n';
+for(let i = 106; i < 124; i ++) ansiTestCard += chalk.bgAnsi256(i).black(` ${i.toString().padStart(3, ' ')} ${(i-15)%6===0?chalk.reset('     '):''}`); ansiTestCard += '\n';
+for(let i = 142; i < 160; i ++) ansiTestCard += chalk.bgAnsi256(i).black(` ${i.toString().padStart(3, ' ')} ${(i-15)%6===0?chalk.reset('     '):''}`); ansiTestCard += '\n';
+for(let i = 178; i < 196; i ++) ansiTestCard += chalk.bgAnsi256(i).black(` ${i.toString().padStart(3, ' ')} ${(i-15)%6===0?chalk.reset('     '):''}`); ansiTestCard += '\n';
+for(let i = 214; i < 232; i ++) ansiTestCard += chalk.bgAnsi256(i).black(` ${i.toString().padStart(3, ' ')} ${(i-15)%6===0?chalk.reset('     '):''}`); ansiTestCard += '\n';
+ansiTestCard += '\n';
+for(let i = 232; i < 256; i ++) ansiTestCard += chalk.bgAnsi256(i).black(` ${i.toString().padStart(3, ' ')} `)
+ansiTestCard += '{/center}';
+
+export {
+  ansiTestCard
+};

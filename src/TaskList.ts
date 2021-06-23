@@ -12,14 +12,19 @@ export class TaskList extends Serializable implements Renderable {
 	}
 
 	static serializationDependencies() {
-		return Array.from(taskClasses.values());
+    let a = Array.from(taskClasses.values())
+		return a as unknown as (typeof Serializable)[];
 	}
 
 	addTask({taskId, options}: TaskOptions) {
     if(!taskClasses.has(taskId))
       throw new Error('unknown task: ' + taskId);
 
-    const taskClass = taskClasses.get(taskId);
+    // this is any because TS doesnt understand that
+    // static references and constructors are the
+    // SAME THING.
+    // in TS, they're MAGICALLY incompatible...
+    const taskClass: any = taskClasses.get(taskId);
     const task = new taskClass();
     
 		this.tasks = [...this.tasks, task];

@@ -129,7 +129,7 @@ export class Pawn extends Serializable implements Tickable {
     }
   }
 
-  static serializationDependencies(): (typeof Serializable)[] {
+  static serializationDependencies() {
     return [Task]
   }
 

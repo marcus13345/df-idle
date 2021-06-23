@@ -14,3 +14,10 @@ registerAction('Gather Slate', (qty) => {
     options: {}
   })
 });
+
+registerAction('Fetch Sticks', (qty) => {
+  Game.current.board.addTask({
+    taskId: "core:fetch-sticks",
+    options: {}
+  })
+});

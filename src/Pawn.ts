@@ -7,21 +7,14 @@ import { render } from './ui/UI.js';
 import { Memory } from './Memory.js';
 import { getTheme } from './registries/Themes.js';
 
-const LABORS = {
-  CUT_TREE: Symbol('CUT_TREE'),
-  MINING: Symbol('CUT_TREE'),
-}
-
-const SKILLS = {
-  PICKAXE: Symbol('PICKAXE'),
-  HATCHET: Symbol('HATCHET')
-}
-
 // const STATUS = {
 // 	IDLE: Symbol('IDLE')
 // }
 
 const energyScale = 0.1;
+const MAX_ENERGY = 100;
+
+// TODO add stats getter to return % of all stats
 
 export class Pawn extends Serializable implements Tickable {
   name: {
@@ -46,7 +39,7 @@ export class Pawn extends Serializable implements Tickable {
 
     if(this.awake === false) {
       this.energy += energyScale * 4;
-      if(this.energy >= 100) {
+      if(this.energy >= MAX_ENERGY) {
         this.awake = true;
       }
     } else {
@@ -88,7 +81,7 @@ export class Pawn extends Serializable implements Tickable {
       this.name.first = faker.name.firstName(this.sex);
     }
     this.awake ??= true;
-    this.energy ??= 100;
+    this.energy ??= MAX_ENERGY;
     this.memories ??= [];
     if(!this.age) {
       this.age = Math.floor(525600 * (16 + Math.random() * 9));

@@ -1,22 +1,36 @@
 import { Task, registerTask } from "@tasks";
 import chalk from 'chalk';
 import { Game } from '@game';
-import { ROCK } from '../items/Items.js';
+import { FLINT_NORMAL, SLATE_NORMAL } from '../items/Items.js';
 
-class GatherRocksTask extends Task {
-  work = 100;
+registerTask('core:gather-flint', class GatherFlintTask extends Task {
+  work = 1000;
   
   reward(): void {
-    Game.current.inv.add(ROCK, 1);
+    Game.current.inv.add(FLINT_NORMAL, 1);
   }
 
   get title() {
-    return chalk.yellow('Chop Trees');
+    return 'Gather Flint';
   }
 
   get status() {
-    return chalk.yellow('LOGGING');
+    return 'SCAVENGING';
   }
-}
+});
 
-registerTask('core:gather-rocks', GatherRocksTask);
+registerTask('core:gather-slate', class GatherSlateTask extends Task {
+  work = 1000;
+  
+  reward(): void {
+    Game.current.inv.add(SLATE_NORMAL, 1);
+  }
+
+  get title() {
+    return 'Gather Slate';
+  }
+
+  get status() {
+    return 'SCAVENGING';
+  }
+});

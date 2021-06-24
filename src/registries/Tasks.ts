@@ -8,10 +8,11 @@ import { progressbar, ProgressbarStyle } from '../Progressbar.js';
 
 export const taskClasses: Map<string, typeof Task> = new Map();
 
-export abstract class Task extends Serializable {
+export class Task {
   progress = 0;
   worker: Pawn;
   data: any;
+  id: string;
 
   ctor() {
     this.worker ??= null;
@@ -66,9 +67,17 @@ export abstract class Task extends Serializable {
   get status() {
     return chalk.bgRedBright.black('DOING A TASK');
   }
+
+  setId(id: string) {
+    this.id = id;
+    return this;
+  }
 }
 
-export function registerTask(id: string, taskClass: typeof Task) {
-  console.log('Registered task', id);
-  taskClasses.set(id, taskClass)
+export class TaskState extends Serializable {
+
+  constructor(task: Task) {
+    super();
+    this._taskId = task.id;
+  }
 }

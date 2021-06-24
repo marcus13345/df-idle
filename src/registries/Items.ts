@@ -11,6 +11,9 @@ export class Item extends Serializable {
 
   name = '';
   id: ItemID = '';
+  props: {
+    [propName: string]: any
+  };
 
   setName(name) {
     this.name = name;
@@ -29,6 +32,14 @@ export class Item extends Serializable {
     console.log('Added item', (this.name ?? "[No Name]").padStart(20, ' '), `| (${this.id})`)
     items.set(this.id, this);
     return this;
+  }
+
+  setProperty(prop: ItemProperty, value: any) {
+    this.props[prop.name] = value;
+  }
+
+  getProperty(prop: ItemProperty) {
+    return this.props[prop.name] ?? null;
   }
 }
 
@@ -55,3 +66,12 @@ export class ItemState extends Serializable implements Renderable {
   }
 }
 
+export class ItemProperty {
+  name: string;
+
+  constructor(name: string) {
+    this.name = name;
+  }
+}
+
+export type ItemFilter = (itemState: ItemState) => boolean;

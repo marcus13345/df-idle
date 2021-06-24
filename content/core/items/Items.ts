@@ -1,4 +1,4 @@
-import { Item } from '@items';
+import { Item, ItemFilter, ItemProperty, ItemState } from '@items';
 
 export const LOG = new Item().setName("Log").setId('core:resources/log');
 export const STICK = new Item().setName("Stick").setId('core:resources/stick');
@@ -29,3 +29,11 @@ export const OBSIDIAN_SPEAR = new Item().setName("Obsidian Spear").setId('core:o
 
 // tools: plant fibres = rope, flint hatchet
 // shale - igneous. metamorphasis => slate
+
+export const SHARPNESS = new ItemProperty('core:sharpness');
+
+export function minSharpness(min: number) {
+  return function(itemState: ItemState): boolean {
+    return itemState.item.getProperty(SHARPNESS) >= min;
+  }
+}

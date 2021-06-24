@@ -2,7 +2,7 @@ import { Item } from '@items';
 
 export const LOG = new Item().setName("Log").setId('core:resources/log');
 export const STICK = new Item().setName("Stick").setId('core:resources/stick');
-export const PLANT_FIBRES = new Item().setName("Stick").setId('core:plant-fibres');
+export const PLANT_FIBRES = new Item().setName("Plant Fibres").setId('core:plant-fibres');
 
 export const FLINT_NORMAL = new Item().setName("Flint").setId('core:flint');
 export const FLINT_FLAKE = new Item().setName("Flint Flake").setId('core:flint-flake');
@@ -26,8 +26,6 @@ export const SLATE_SPEAR = new Item().setName("Slate Spear").setId('core:slate-s
 export const OBSIDIAN_HATCHET = new Item().setName("Obsidian Hatchet").setId('core:obsidian-hatchet');
 export const OBSIDIAN_ARROWHEAD = new Item().setName("Obsidian Arrowhead").setId('core:obsidian-arrowhead');
 export const OBSIDIAN_SPEAR = new Item().setName("Obsidian Spear").setId('core:obsidian-spear');
-
-
 
 // tools: plant fibres = rope, flint hatchet
 // shale - igneous. metamorphasis => slate

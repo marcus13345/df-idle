@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { getTheme } from "./ui/Theme.js";
+import { getTheme } from "./registries/Themes.js";
 
 export enum ProgressbarStyle {
 	indicator = 'indicator',
@@ -9,7 +9,7 @@ export enum ProgressbarStyle {
 export const barCache: Map<string, string> = new Map();
 
 export function progressbar(completion: number, width: number, style: ProgressbarStyle = ProgressbarStyle.indicator) {
-	const cacheKey = `${completion}-${width}-${style}`;
+	const cacheKey = `${Math.round(completion * width * 8)}-${width}-${style}`;
 	if(barCache.has(cacheKey)) {
 		stats.cacheHits ++;
 		return barCache.get(cacheKey);
@@ -23,7 +23,19 @@ export function progressbar(completion: number, width: number, style: Progressba
 	} else if(style === ProgressbarStyle.progress) {
 		chalkFn = getTheme().progressBar.normal;
 	}
-	const chars = [' ', '▏', '▎', '▍', '▌', '▋', '▊', '▉', '█'];
+	
+	const chars = [
+		'\u0020',
+		'\u258f',
+		'\u258e',
+		'\u258d',
+		'\u258c',
+		'\u258b',
+		'\u258a',
+		'\u2589',
+		'\u2588'
+	];
+
 	let str = '';
 	for(let i = 0; i < width; i ++) {
 		const remainder = Math.floor(Math.min(Math.max(0, (completion * width) - i), 1) * 8);

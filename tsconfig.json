@@ -1,14 +1,22 @@
 {
 	"compilerOptions": {
 		"target": "ES2020",
-		"module": "ES2020",
+		"module": "ESNext",
 		"moduleResolution": "Node",
 		"allowSyntheticDefaultImports": true,
 		"outDir": "out",
 		"declaration": true,
-		"sourceMap": true
+		"sourceMap": true,
+		"paths": {
+			"@themes": ["./src/registries/Themes"],
+			"@actions": ["./src/registries/Actions"],
+			"@tasks": ["./src/registries/Tasks"],
+			"@items": ["./src/registries/Items"],
+			"@game": ["./src/Game"]
+		}
 	},
 	"include": [
-		"src/**/*.ts"
+		"src/**/*.ts",
+		"content/**/*.ts"
 	]
 }

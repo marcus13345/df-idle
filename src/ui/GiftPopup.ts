@@ -1,11 +1,11 @@
 import chalk from 'chalk';
 import blessed from 'neo-blessed';
 import { Game } from '../Game.js';
-import { ItemState } from '../Item.js';
+import { ItemState } from '../registries/Items.js';
 import { Player } from "../multiplayer/Player";
 import { Pawn } from '../Pawn.js';
-import { getTheme } from './Theme.js';
-import { boxStyle, screen } from './UI.js';
+import { getTheme } from '../registries/Themes.js';
+import { boxStyle, panels } from './UI.js';
 
 export class GiftPopup {
 	box;
@@ -30,7 +30,7 @@ export class GiftPopup {
 				this.send();
 			} if(key.full === 'escape' || key.full === 'enter') {
 				Game.current.clock.start();
-				screen.remove(this.box);
+				panels.screen.remove(this.box);
 			} else if (key.full === 'up') {
 				this.selected --;
 			} else if (key.full === 'down') {
@@ -44,7 +44,7 @@ export class GiftPopup {
 		});
 		this.render();
 		for(const pawn of Game.current.pawns) this.pawns.set(pawn, 0);
-		screen.append(this.box);
+		panels.screen.append(this.box);
 		this.box.focus();
 		Game.current.clock.pause();
 	}
@@ -80,6 +80,6 @@ export class GiftPopup {
 			}
 			return pawns.join('\n')
 		})()}\n\n{|}${getTheme().hotkey('escape')}${getTheme().normal(': Cancel ')}\n{|}${getTheme().hotkey('enter')}${getTheme().normal(': Okay ')}`);
-		screen.render();
+		panels.screen.render();
 	}
 }

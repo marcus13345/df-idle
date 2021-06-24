@@ -1,37 +1,59 @@
 import { Serializable } from 'frigid';
 import { Game } from './Game.js';
-import { Item, ItemState } from './Item.js';
+import { Item, ItemState } from './registries/Items.js';
+import { Popup } from './ui/Popup.js';
 import { Renderable } from './ui/UI.js';
 
 export class Inventory extends Serializable implements Renderable {
-	items: ItemState[];
+  items: ItemState[];
 
-	ctor() {
-		this.items ??= [];
-	}
+  ctor() {
+    this.items ??= [];
+  }
 
-	static serializationDependencies() {
-		return [ItemState];
-	}
+  validate() {
+    const invalid: ItemState[] = [];
+    for(const itemState of this.items) {
+      try {
+        itemState.item;
+      } catch {
+        invalid.push(itemState);
+      }
+    }
+    if(invalid.length === 0) return;
+    
+    for(const itemState of invalid) {
+      this.remove(itemState);
+    }
+    Popup.show('Invalid ItemStates removed:\n\n' + invalid.map(itemState => itemState.qty + 'x ' + itemState.itemId).join('\n'));
+  }
 
-	add(item: Item, qty: number = 1) {
-		const id = item.id;
-		const existingArr = this.items.filter(itemState => {
-			return itemState.itemId === id;
-		});
-		let existing: ItemState = null;
-		if(existingArr.length === 1) {
-			existing = existingArr[0];
-		}
-		if(existing) {
-			existing.qty += qty;
-		} else {
-			this.items.push(new ItemState(item, qty, {}));
-		}
-		Game.current.sync();
-	}
+  static serializationDependencies() {
+    return [ItemState];
+  }
 
-	render() {
-		return this.items.map(item => item.render()).join('\n');
-	}
+  remove(itemState: ItemState) {
+    this.items = this.items.filter(test => test !== itemState);
+  }
+
+  add(item: Item, qty: number = 1) {
+    const id = item.id;
+    const existingArr = this.items.filter(itemState => {
+      return itemState.itemId === id;
+    });
+    let existing: ItemState = null;
+    if(existingArr.length === 1) {
+      existing = existingArr[0];
+    }
+    if(existing) {
+      existing.qty += qty;
+    } else {
+      this.items.push(new ItemState(item, qty, {}));
+    }
+    Game.current.sync();
+  }
+
+  render() {
+    return this.items.map(item => item.render()).join('\n');
+  }
 }

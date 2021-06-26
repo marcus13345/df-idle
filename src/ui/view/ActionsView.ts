@@ -12,7 +12,7 @@ export class ActionsView extends View {
     this.name = 'Actions';
   }
 
-  keypress(key) {
+  keypress(key: {full: string}) {
     if(key.full === 'up') {
       this.actionIdx --;
     } else if (key.full === 'down') {

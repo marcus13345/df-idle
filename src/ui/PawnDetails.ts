@@ -21,7 +21,7 @@ export class PawnDetails {
 			tags: true,
 			...boxStyle(),
 		});
-		this.box.on('keypress', (evt, key) => {
+		this.box.on('keypress', (evt: {}, key: {full: string}) => {
 			if(key.full === 'escape' || key.full === 'enter') {
 				Game.current.clock.start();
 				panels.screen.remove(this.box);

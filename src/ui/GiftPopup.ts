@@ -25,7 +25,7 @@ export class GiftPopup {
 			tags: true,
 			...boxStyle(),
 		});
-		this.box.on('keypress', (evt, key) => {
+		this.box.on('keypress', (evt: {}, key: {full: string}) => {
 			if(key.full === 'enter') {
 				this.send();
 			} if(key.full === 'escape' || key.full === 'enter') {

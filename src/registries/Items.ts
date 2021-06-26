@@ -15,7 +15,7 @@ export class Item<Data> extends Serializable {
   id: ItemID = '';
   props: Map<string, PropertyValue> = new Map();
 
-  setName(name) {
+  setName(name: string) {
     this.name = name;
     this.register(false);
     return this;
@@ -35,7 +35,7 @@ export class Item<Data> extends Serializable {
   }
 
   setProperty(prop: ItemProperty, value: any) {
-    this.props[prop.name] = value;
+    this.props.set(prop.name, value);
     return this;
   }
 

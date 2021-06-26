@@ -13,7 +13,8 @@
 			"@tasks": ["./src/registries/Tasks"],
 			"@items": ["./src/registries/Items"],
 			"@game": ["./src/Game"]
-		}
+		},
+    "noImplicitAny": true
 	},
 	"include": [
 		"src/**/*.ts",

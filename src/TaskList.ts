@@ -2,6 +2,8 @@ import { Serializable } from 'frigid';
 import { Task, TaskState } from './registries/Tasks.js';
 import { render, Renderable, panels } from './ui/UI.js';
 
+const taskTypes = {};
+
 export class TaskList extends Serializable implements Renderable {
   tasks: TaskState<any>[] = [];
 
@@ -32,7 +34,6 @@ export class TaskList extends Serializable implements Renderable {
   }
 }
 
-const taskTypes = {};
-export function registerTask(name, clazz) {
-  taskTypes[name] = clazz;
-}
+// export function registerTask(name, clazz) {
+//   taskTypes[name] = clazz;
+// }

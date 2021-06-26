@@ -19,14 +19,14 @@ import { GATHER_FLINT, MAKE_ARROWHEAD } from '../tasks/CoreTasks.js';
 //   })
 // });
 
-registerAction('Gather Flint', (qty) => {
+registerAction('Gather Flint', () => {
   const taskState = new TaskState(GATHER_FLINT);
   Game.current.board.addTask(taskState);
 });
 
 registerAction('Create Arrowhead', (qty) => {
   const rock = new ItemState(FLINT_NORMAL, 1, null);
-  const task = new TaskState(MAKE_ARROWHEAD).setData({
+  const task = new TaskState(MAKE_ARROWHEAD, {
     baseMaterial: rock
   });
 

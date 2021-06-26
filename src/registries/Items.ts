@@ -6,14 +6,14 @@ export type ItemID = string;
 
 const items = new Map<ItemID, Item>();
 
+export type PropertyValue = number | boolean;
+
 // ITEMS SHALL BE SINGULAR
 export class Item extends Serializable {
 
   name = '';
   id: ItemID = '';
-  props: {
-    [propName: string]: any
-  };
+  props: Map<string, PropertyValue> = new Map();
 
   setName(name) {
     this.name = name;
@@ -40,7 +40,8 @@ export class Item extends Serializable {
   }
 
   getProperty(prop: ItemProperty) {
-    return this.props[prop.name] ?? null;
+    if(this.props.has(prop.name)) return this.props.get(prop.name);
+    else return null;
   }
 }
 

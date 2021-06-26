@@ -6,7 +6,7 @@ import { Game } from '../Game.js';
 import { panels } from '../ui/UI.js';
 import { progressbar, ProgressbarStyle } from '../Progressbar.js';
 
-const tasks: Map<string, Task<any>> = new Map();
+export const tasks: Map<string, Task<any>> = new Map();
 export type TaskCategory = "self" | "work" | "craft" | "idle";
 
 export class Task<Data> {
@@ -67,18 +67,13 @@ export class TaskState<T> extends Serializable {
     this.testCompletion();
   }
 
-  constructor(task: Task<T>) {
+  constructor(task: Task<T>, data: T = {} as T) {
     super();
     this.taskId = task.id;
     this.progress = 0;
     this.worker = null;
     // preset the data to nothing JIC
-    this.data = {} as T;
-  }
-
-  setData(data: T) {
     this.data = data;
-    return this;
   }
 
   stopJob() {
@@ -92,7 +87,7 @@ export class TaskState<T> extends Serializable {
   }
 
   testCompletion() {
-    if (this.completed) {
+    if (this.taskId && this.completed) {
       this.task.completionEvent(this.data);
       Game.current.board.removeTask(this);
     }

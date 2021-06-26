@@ -2,30 +2,12 @@
 import chalk from 'chalk';
 import blessed from 'neo-blessed';
 import ansi from 'sisteransi';
-import { getTheme } from '../registries/Themes.js';
+import { boxStyle, getTheme } from '@themes';
+export { Popup } from './Popup.js';
 
 export interface Renderable {
 	render(): void
 }
-
-// TODO move this to theme
-export const boxStyle = () => {
-	return {
-		style: {
-			border: {
-				fg: getTheme().border.normal
-			},
-			focus: {
-				border: {
-					fg: getTheme().border.focused
-				}
-			}
-		},
-		border: {
-			type: 'line'
-		}
-	};
-};
 
 let leftPanel: any;
 let rightPanel: any;
@@ -76,6 +58,9 @@ export function render(thing?: Renderable) {
 
 export function start() {
   assertNotStarted();
+
+  process.stdout.write('\x1b[?1049h');
+
   screen = blessed.screen({
     smartCSR: true,
     terminal: 'xterm-256color'
@@ -133,6 +118,12 @@ export function start() {
   setTitle('');
 }
 
+export function stop() {
+  screen.destroy();
+  process.stdout.write('\x1b[?1049l');
+}
+
+// move to some debugging shit, idk
 let ansiTestCard = '{center}';
 for(let i = 16; i < 34; i ++) ansiTestCard += chalk.bgAnsi256(i).black(` ${i.toString().padStart(3, ' ')} ${(i-15)%6===0?chalk.reset('     '):''}`); ansiTestCard += '\n';
 for(let i = 52; i < 70; i ++) ansiTestCard += chalk.bgAnsi256(i).black(` ${i.toString().padStart(3, ' ')} ${(i-15)%6===0?chalk.reset('     '):''}`); ansiTestCard += '\n';

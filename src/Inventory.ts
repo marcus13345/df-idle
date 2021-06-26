@@ -5,14 +5,14 @@ import { Popup } from './ui/Popup.js';
 import { Renderable } from './ui/UI.js';
 
 export class Inventory extends Serializable implements Renderable {
-  items: ItemState[];
+  items: ItemState<any>[];
 
   ctor() {
     this.items ??= [];
   }
 
   validate() {
-    const invalid: ItemState[] = [];
+    const invalid: ItemState<any>[] = [];
     for(const itemState of this.items) {
       try {
         itemState.item;
@@ -32,11 +32,11 @@ export class Inventory extends Serializable implements Renderable {
     return [ItemState];
   }
 
-  remove(itemState: ItemState) {
+  remove(itemState: ItemState<any>) {
     this.items = this.items.filter(test => test !== itemState);
   }
 
-  add(itemState: ItemState) {
+  add(itemState: ItemState<any>) {
     this.items.push(itemState);
     this.reduceInv();
   }

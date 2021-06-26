@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { getTheme } from "./registries/Themes.js";
+import { getTheme } from "@themes";
 
 export enum ProgressbarStyle {
 	indicator = 'indicator',

@@ -4,8 +4,8 @@ import { Game } from '../Game.js';
 import { ItemState } from '../registries/Items.js';
 import { Player } from "../multiplayer/Player";
 import { Pawn } from '../Pawn.js';
-import { getTheme } from '../registries/Themes.js';
-import { boxStyle, panels } from './UI.js';
+import { getTheme, boxStyle } from '@themes';
+import { panels } from './UI.js';
 
 export class GiftPopup {
 	box;
@@ -50,7 +50,7 @@ export class GiftPopup {
 	}
 
 	send() {
-		const stuffToSend: (Pawn | ItemState)[] = [];
+		const stuffToSend: (Pawn | ItemState<any>)[] = [];
 		for(const [pawn, qty] of this.pawns) {
 			if(qty === 0) continue;
 			stuffToSend.push(pawn);

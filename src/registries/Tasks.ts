@@ -12,7 +12,7 @@ export type TaskCategory = "self" | "work" | "craft" | "idle";
 export class Task<Data> {
   id: string;
   work: number;
-  name: string;
+  name: string | ((data: Data) => string);
   status: string;
   tasklistVisibility: boolean;
   category: TaskCategory;
@@ -23,7 +23,7 @@ export class Task<Data> {
     return this;
   }
 
-  setName(name: string) {
+  setName(name: string | ((data: Data) => string)) {
     this.name = name;
     return this;
   }
@@ -43,7 +43,7 @@ export class Task<Data> {
     return this;
   }
 
-  setCompletionEvent(fn: (data: any) => void) {
+  setCompletionEvent(fn: (data: Data) => void) {
     this.completionEvent = fn;
     return this;
   }

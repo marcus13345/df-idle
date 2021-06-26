@@ -1,6 +1,6 @@
 import { Task } from "@tasks";
 import { Game } from '@game';
-import { FLINT_NORMAL, SLATE_NORMAL } from '../items/CoreItems.js';
+import { ARROWHEAD, FLINT_NORMAL, SLATE_NORMAL } from '../items/CoreItems.js';
 import { ItemState } from "@items";
 import { Popup } from "../../../src/ui/Popup.js";
 import { inspect } from 'util';
@@ -17,13 +17,16 @@ export const GATHER_FLINT = new Task('core:gather-flint')
   });
 
 export const MAKE_ARROWHEAD = new Task<{
-  baseMaterial: ItemState
+  baseMaterial: ItemState<any>
 }>('core:gather-slate')
-  .setName('Gather Slate')
-  .setStatus('SCAVENGING')
-  .setWork(1)
+  .setName('Craft Arrowhead')
+  .setStatus('CRAFTING')
+  .setWork(1000)
   .setTasklistVisibility(true)
-  .setCategory("work")
+  .setCategory("craft")
   .setCompletionEvent((data) => {
-    Popup.show(inspect(data));
+    const itemState = new ItemState(ARROWHEAD, 1, {
+      baseMaterial: data.baseMaterial
+    });
+    Game.current.inv.add(itemState);
   });

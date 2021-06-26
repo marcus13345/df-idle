@@ -14,7 +14,7 @@ export class Player {
 		return this.name;
 	}
 
-	send(items: (ItemState | Pawn)[]) {
+	send(items: (ItemState<any> | Pawn)[]) {
 		return new Promise((res, rej) => {
 			const pawnJsons: string[] = [];
 			for (const item of items) {

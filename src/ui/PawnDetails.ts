@@ -4,7 +4,8 @@ import { Game } from '../Game.js';
 import { stringify } from '../Memory.js';
 import { Pawn } from '../Pawn.js';
 import Time from '../Time.js';
-import { boxStyle, panels } from './UI.js';
+import { panels } from './UI.js';
+import { boxStyle } from '@themes';
 
 export class PawnDetails {
 	box;

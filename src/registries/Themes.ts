@@ -92,3 +92,22 @@ export function setTheme(name: ThemeName): void {
 export function getTheme(): Theme {
   return currentTheme;
 }
+
+// TODO move this to theme
+export const boxStyle = () => {
+	return {
+		style: {
+			border: {
+				fg: getTheme().border.normal
+			},
+			focus: {
+				border: {
+					fg: getTheme().border.focused
+				}
+			}
+		},
+		border: {
+			type: 'line'
+		}
+	};
+};

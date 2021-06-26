@@ -1,15 +1,15 @@
 import { Serializable } from 'frigid';
-import { getTheme } from './Themes.js';
+import { getTheme } from '@themes';
 import { Renderable } from '../ui/UI.js';
 
 export type ItemID = string;
 
-const items = new Map<ItemID, Item>();
+const items = new Map<ItemID, Item<any>>();
 
 export type PropertyValue = number | boolean;
 
 // ITEMS SHALL BE SINGULAR
-export class Item extends Serializable {
+export class Item<Data> extends Serializable {
 
   name = '';
   id: ItemID = '';
@@ -45,10 +45,10 @@ export class Item extends Serializable {
   }
 }
 
-export class ItemState extends Serializable implements Renderable {
+export class ItemState<Data> extends Serializable implements Renderable {
   qty: number;
   itemId: ItemID;
-  data: any;
+  data: Data;
 
   get item() {
     if(!items.has(this.itemId))
@@ -56,7 +56,7 @@ export class ItemState extends Serializable implements Renderable {
     return items.get(this.itemId);
   }
 
-  constructor(item: Item, amount: number, data: any) {
+  constructor(item: Item<Data>, amount: number, data: Data) {
     super();
     this.qty = amount;
     this.itemId = item.id;
@@ -76,4 +76,4 @@ export class ItemProperty {
   }
 }
 
-export type ItemFilter = (itemState: ItemState) => boolean;
+export type ItemFilter = (itemState: ItemState<any>) => boolean;

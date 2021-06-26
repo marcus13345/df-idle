@@ -5,6 +5,24 @@ import { parse, resolve } from 'path';
 import walkSync from 'walk-sync';
 import { fileURLToPath } from 'url';
 import { Game } from '@game';
+import { isStarted, stop } from './ui/UI.js';
+import { writeFileSync } from 'fs';
+
+
+function gracefulShutdown() {
+  if(isStarted()) {
+    stop();
+  }
+  console.log('shutting down gracefully...');
+  if(Game.current) {
+    console.log('saving world...');
+    Game.current.sync();
+  }
+  console.log('exitting');
+  process.exit(0);
+}
+process.on('exit', gracefulShutdown);
+
 
 const saveFile = process.argv[2] || 'data/world01.json';
 

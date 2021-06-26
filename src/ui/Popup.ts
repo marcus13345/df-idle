@@ -1,8 +1,8 @@
 import chalk from 'chalk';
 import blessed from 'neo-blessed';
 import { Game } from '../Game.js';
-import { getTheme } from '@themes';
-import { boxStyle, panels } from './UI.js';
+import { boxStyle, getTheme } from '@themes';
+import { panels } from './UI.js';
 
 export class Popup {
   box;
@@ -15,7 +15,7 @@ export class Popup {
     this.box = blessed.box({
       top: 'center',
       left: 'center',
-      width: '100%',
+      width: 'shrink',
       height: 'shrink',
       content: getTheme().normal(content) + `\n\n{right}` + getTheme().hotkey('enter') + getTheme().normal(`: Okay `) + '{/right}',
       tags: true,

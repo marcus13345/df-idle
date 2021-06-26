@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import { Serializable } from "frigid";
-import { getTheme } from "./registries/Themes.js";
+import { getTheme } from "@themes";
 import { Renderable } from "./ui/UI.js";
 
 type AbbreviatedMonthName = string;

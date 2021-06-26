@@ -68,7 +68,9 @@ export const FLINT_HATCHET = new Item()
   .setName("Flint Hatchet")
   .setId('core:flint-hatchet')
 
-export const FLINT_ARROWHEAD = new Item()
+export const ARROWHEAD = new Item<{
+  baseMaterial: ItemState<any>
+}>()
   .setName("Flint Arrowhead")
   .setId('core:flint-arrowhead')
 
@@ -102,9 +104,9 @@ export const OBSIDIAN_SPEAR = new Item()
 
 // #endregion
 
-export function FILTER_CRAFTABLE_ROCK(item: ItemState) {
-  return 
-}
+// export function FILTER_CRAFTABLE_ROCK(item: ItemState<any>) {
+//   return 
+// }
 
 // tools: plant fibres = rope, flint hatchet
 // shale - igneous. metamorphasis => slate

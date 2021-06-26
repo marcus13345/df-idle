@@ -1,4 +1,4 @@
-import { getTheme } from "../../registries/Themes.js";
+import { getTheme } from "@themes";
 import { Game } from "../../Game.js";
 import { Renderable } from "../UI.js";
 import { View } from "../View.js";

@@ -5,7 +5,7 @@ import Time, { Tickable } from './Time.js';
 import { Game } from './Game.js';
 import { render } from './ui/UI.js';
 import { Memory } from './Memory.js';
-import { getTheme } from './registries/Themes.js';
+import { getTheme } from '@themes';
 
 // const STATUS = {
 // 	IDLE: Symbol('IDLE')

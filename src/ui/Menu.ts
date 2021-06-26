@@ -52,6 +52,8 @@ export class Menu implements Renderable {
         this.regressView();
       } else if (key.full === 'right') {
         this.advanceView();
+      } else if (key.full === 'escape') {
+        this.advanceView();
       
       // debugging hotkeys
       } else if (key.full === '1') {

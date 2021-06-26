@@ -1,6 +1,6 @@
 import { Serializable } from 'frigid';
 import faker from 'faker';
-import { Task } from './registries/Tasks.js';
+import { TaskState } from './registries/Tasks.js';
 import Time, { Tickable } from './Time.js';
 import { Game } from './Game.js';
 import { render } from './ui/UI.js';
@@ -21,7 +21,7 @@ export class Pawn extends Serializable implements Tickable {
     first: string,
     last: string
   };
-  job: Task;
+  job: TaskState<any>;
   awake: boolean;
   sex: number;
 
@@ -108,7 +108,7 @@ export class Pawn extends Serializable implements Tickable {
     }
   }
 
-  assignJob(task: Task) {
+  assignJob(task: TaskState<any>) {
     this.job?.stopJob()
     this.job = task;
     this.job.claim(this);
@@ -116,14 +116,14 @@ export class Pawn extends Serializable implements Tickable {
 
   get status() {
     if(this.job) {
-      return this.job.status;
+      return this.job.task.status;
     } else {
       return this.awake ? getTheme().status.idle('IDLE') : getTheme().status.self('RESTING')
     }
   }
 
   static serializationDependencies() {
-    return [Task]
+    return [TaskState]
   }
 
   toString() {

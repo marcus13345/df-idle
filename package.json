@@ -36,6 +36,7 @@
     "dev": "supervisor -w out -n exit -t -k --exec yarn -- start",
     "prod": "git fetch && git pull && yarn && tsc && yarn start",
     "test": "mocha",
-    "lint": "eslint src/**/*.ts"
+    "lint": "eslint src/**/*.ts",
+    "profile": "node --inspect --no-warnings --loader ./lib/aliases.mjs --enable-source-maps out/src/index.js"
   }
 }

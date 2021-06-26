@@ -36,6 +36,7 @@ export class Item extends Serializable {
 
   setProperty(prop: ItemProperty, value: any) {
     this.props[prop.name] = value;
+    return this;
   }
 
   getProperty(prop: ItemProperty) {

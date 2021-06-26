@@ -6,24 +6,79 @@ import { Game } from '../Game.js';
 import { panels } from '../ui/UI.js';
 import { progressbar, ProgressbarStyle } from '../Progressbar.js';
 
-export const taskClasses: Map<string, typeof Task> = new Map();
+const tasks: Map<string, Task<any>> = new Map();
+export type TaskCategory = "self" | "work" | "craft" | "idle";
 
-export class Task {
-  progress = 0;
-  worker: Pawn;
-  data: any;
+export class Task<Data> {
   id: string;
+  work: number;
+  name: string;
+  status: string;
+  tasklistVisibility: boolean;
+  category: TaskCategory;
+  completionEvent: (data: Data) => void;
+
+  setTasklistVisibility(b: boolean) {
+    this.tasklistVisibility = b;
+    return this;
+  }
+
+  setName(name: string) {
+    this.name = name;
+    return this;
+  }
+
+  setStatus(s: string) {
+    this.status = s;
+    return this;
+  }
+
+  setCategory(c: TaskCategory) {
+    this.category = c;
+    return this;
+  }
+
+  setWork(n: number) {
+    this.work = n;
+    return this;
+  }
+
+  setCompletionEvent(fn: (data: any) => void) {
+    this.completionEvent = fn;
+    return this;
+  }
+
+  constructor(id: string) {
+    this.id = id;
+    this.tasklistVisibility = true;
+    this.category = "work";
+    tasks.set(this.id, this);
+  }
+}
+
+export class TaskState<T> extends Serializable {
+  taskId: string;
+  progress: number;
+  worker: Pawn;
+  data: T;
 
   ctor() {
-    this.worker ??= null;
+    // retest completion when loaded, JUST IN CASE
     this.testCompletion();
   }
 
-  abstract reward(): void;
-  abstract work: number;
+  constructor(task: Task<T>) {
+    super();
+    this.taskId = task.id;
+    this.progress = 0;
+    this.worker = null;
+    // preset the data to nothing JIC
+    this.data = {} as T;
+  }
 
-  get completed() {
-    return this.completion >= 1;
+  setData(data: T) {
+    this.data = data;
+    return this;
   }
 
   stopJob() {
@@ -37,10 +92,14 @@ export class Task {
   }
 
   testCompletion() {
-    if (this.progress >= this.work) {
-      this.reward();
+    if (this.completed) {
+      this.task.completionEvent(this.data);
       Game.current.board.removeTask(this);
     }
+  }
+
+  free() {
+    this.worker = null;
   }
 
   claim(pawn: Pawn) {
@@ -48,36 +107,23 @@ export class Task {
   }
 
   get completion() {
-    return Math.min(1, this.progress / this.work);
+    return Math.min(1, this.progress / this.task.work);
+  }
+
+  get task() {
+    return tasks.get(this.taskId);
+  }
+
+  get completed() {
+    return this.completion >= 1;
   }
 
   toString() {
     // HACK magic number 2 here, is the border
     // of the panel
     const width = panels.left.width - 2;
-    const left = ' ' + this.title + ' ' + (this.worker?.toString() || chalk.bold.black('Queued'));
+    const left = ' ' + this.task.name + ' ' + (this.worker?.toString() || chalk.bold.black('Queued'));
     const bar = width - 2;
     return `${left}\n ${progressbar(this.completion, bar, ProgressbarStyle.progress)}\n`;
-  }
-
-  get title() {
-    return chalk.bgRedBright.black('[Abstract Task]');
-  }
-
-  get status() {
-    return chalk.bgRedBright.black('DOING A TASK');
-  }
-
-  setId(id: string) {
-    this.id = id;
-    return this;
-  }
-}
-
-export class TaskState extends Serializable {
-
-  constructor(task: Task) {
-    super();
-    this._taskId = task.id;
   }
 }

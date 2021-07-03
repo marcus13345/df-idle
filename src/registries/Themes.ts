@@ -13,8 +13,9 @@ type StyleFunction = (text: string) => string;
 export type Theme = {
   header: StyleFunction,
   subheader: StyleFunction,
+  bright: StyleFunction,
   normal: StyleFunction,
-  selected: StyleFunction,
+  dimmed: StyleFunction,
   hotkey: StyleFunction,
   tab: {
     normal: StyleFunction,
@@ -42,10 +43,11 @@ export type Theme = {
 }
 
 export const backupTheme: Theme = {
-  header: chalk.ansi256(255).bold,
-  subheader: chalk.ansi256(243).bold,
-  normal: chalk.ansi256(243),
-  selected: chalk.ansi256(250),
+  header: chalk.ansi256(255),
+  subheader: chalk.ansi256(250),
+  bright: chalk.ansi256(255),
+  normal: chalk.ansi256(250),
+  dimmed: chalk.ansi256(245),
   hotkey: chalk.ansi256(40),
   tab: {
     normal: chalk.ansi256(117),
@@ -53,7 +55,7 @@ export const backupTheme: Theme = {
   },
   border: {
     focused: '#ffffff',
-    normal: '#222222'
+    normal: '#888888'
   },
   progressBar: {
     indicator: {

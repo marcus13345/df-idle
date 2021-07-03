@@ -1,8 +1,23 @@
 import { Item, ItemFilter, ItemProperty, ItemState } from '@items'
 
+class Material {
+  name: string;
+  hardness: number;
+
+  setName(name: string) {
+    this.name = name;
+    return this;
+  }
+
+  setHardness(n: number) {
+    this.hardness = n;
+  }
+}
+
 // #region properties!
 export const ROCK = new ItemProperty('core:rock')
-export const ROCK_HARDNESS = new ItemProperty('core:mohs-hardness')
+export const MATERIAL = new ItemProperty('core:material')
+export const ROCK_SIZE = new ItemProperty('core:rock-size')
 export const SEDIMENTARY = new ItemProperty('core:sedimentary')
 export const IGNEOUS = new ItemProperty('core:igneous')
 export const METAMORPHIC = new ItemProperty('core:metamorphic')
@@ -26,7 +41,12 @@ export const PLANT_FIBRES = new Item()
 export const FLINT_NORMAL = new Item()
   .setName("Flint")
   .setId('core:flint')
-  .setProperty(ROCK_HARDNESS, 7)
+  .setProperty(MATERIAL, new Material()
+    .setName('Flint')
+    .setHardness(7)
+  )
+  .setProperty(ROCK, true)
+  .setProperty(IGNEOUS, true)
 
 export const SANDSTONE_NORMAL = new Item()
   .setName("Sandstone")
@@ -104,9 +124,13 @@ export const OBSIDIAN_SPEAR = new Item()
 
 // #endregion
 
-// export function FILTER_CRAFTABLE_ROCK(item: ItemState<any>) {
-//   return 
-// }
+export function FILTER_CRAFTABLE_ROCK(itemState: ItemState<any>) {
+  if(!itemState.item.getProperty(MATERIAL)) return false;
+  const mat: Material = itemState.item.getProperty(MATERIAL) as Material;
+  return itemState.item.getProperty(ROCK)
+    && mat.hardness >= 6
+    && mat.hardness < 10
+}
 
 // tools: plant fibres = rope, flint hatchet
 // shale - igneous. metamorphasis => slate

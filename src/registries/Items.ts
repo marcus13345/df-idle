@@ -6,14 +6,12 @@ export type ItemID = string;
 
 const items = new Map<ItemID, Item<any>>();
 
-export type PropertyValue = number | boolean;
-
 // ITEMS SHALL BE SINGULAR
 export class Item<Data> extends Serializable {
 
   name = '';
   id: ItemID = '';
-  props: Map<string, PropertyValue> = new Map();
+  props: Map<string, any> = new Map();
 
   setName(name: string) {
     this.name = name;
@@ -49,6 +47,12 @@ export class ItemState<Data> extends Serializable implements Renderable {
   qty: number;
   itemId: ItemID;
   data: Data;
+
+  take(qty: number) {
+    if(this.qty < qty) throw new Error('cant split more than stack from stack...');
+    this.qty -= qty;
+    return new ItemState<Data>(this.item, qty, this.data);
+  }
 
   get item() {
     if(!items.has(this.itemId))

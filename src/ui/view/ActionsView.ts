@@ -24,7 +24,7 @@ export class ActionsView extends View {
   render() {
     return actions.map((action, idx) => `${(() => {
       if(this.actionIdx === idx) {
-        return getTheme().selected('  ❯ ' + action.name);
+        return getTheme().bright('  ❯ ' + action.name);
       } else {
         return getTheme().normal('    ' + action.name);
       }

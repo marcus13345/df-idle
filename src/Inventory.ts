@@ -42,29 +42,23 @@ export class Inventory extends Serializable implements Renderable {
   }
 
   private reduceInv() {
-    // TODO deduplicate itemstates...
-    // use a reduce to reconstruct the array.
-    // REMEMBER TO MAINTAIN THE OBJECTs!
-    // dont do immutability to it, as the objects
-    // may have crossreferences! (maybe)
-  }
+    this.items = this.items.reduce((items, itemState) => {
 
-  // add(item: Item, qty: number = 1) {
-  //   const id = item.id;
-  //   const existingArr = this.items.filter(itemState => {
-  //     return itemState.itemId === id;
-  //   });
-  //   let existing: ItemState = null;
-  //   if(existingArr.length === 1) {
-  //     existing = existingArr[0];
-  //   }
-  //   if(existing) {
-  //     existing.qty += qty;
-  //   } else {
-  //     this.items.push(new ItemState(item, qty, {}));
-  //   }
-  //   Game.current.sync();
-  // }
+      // TODO at some point, be able to merge data items?
+
+      const existing = items.find(testItemState => {
+        return itemState.itemId === testItemState.itemId
+          && itemState.data === testItemState.data;
+      });
+
+      if(existing) {
+        existing.qty += itemState.qty;
+      } else {
+        items.push(itemState);
+      }
+      return items
+    }, [] as ItemState<any>[])
+  }
 
   render() {
     return this.items.map(item => item.render()).join('\n');

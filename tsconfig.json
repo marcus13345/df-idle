@@ -12,6 +12,7 @@
 			"@actions": ["./src/registries/Actions"],
 			"@tasks": ["./src/registries/Tasks"],
 			"@items": ["./src/registries/Items"],
+			"@ui": ["./src/ui/UI"],
 			"@game": ["./src/Game"]
 		},
     "noImplicitAny": true

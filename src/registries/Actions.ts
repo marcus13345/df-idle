@@ -3,7 +3,7 @@ import { Renderable } from "../ui/UI.js";
 
 export const actions: Action[] = [];
 
-export function registerAction(name: string, invoke: (qty: number) => void) {
+export function registerAction(name: string, invoke: () => void) {
   console.log('Registered action', name);
   actions.push(new Action(name, invoke))  
 }

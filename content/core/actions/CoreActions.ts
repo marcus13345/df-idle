@@ -18,9 +18,11 @@ registerAction('Gather Flint', () => {
   Game.current.board.addTask(taskState);
 });
 
-registerAction('Create Arrowhead', () => {
+registerAction('Create Arrowhead', async () => {
   // const rock = new ItemState(FLINT_NORMAL, 1, null);
-  const item = SelectItem.show()
+  const item = await SelectItem.show((itemState) => {
+    return true;
+  });
   const task = new TaskState(MAKE_ARROWHEAD, {
     baseMaterial: rock
   });

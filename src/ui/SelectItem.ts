@@ -14,8 +14,8 @@ export class SelectItem {
   items: ItemState<any>[];
   selectedIdx: number;
 
-  static show(filter: ItemFilterFunction): Promise<ItemState<any>> {
-    const si = new SelectItem(filter, 1);
+  static show(filter: ItemFilterFunction, qty: number = 1): Promise<ItemState<any>> {
+    const si = new SelectItem(filter, qty);
     return new Promise(res => {
       si.emitter.on('selected', (itemState: ItemState<any>) => {
         res(itemState);
@@ -60,10 +60,18 @@ export class SelectItem {
         this.emitter.emit('selected', this.selectedItem.take(this.qty));
         this.close();
       } else if(key.full === 'down') {
-
+        
       }
     });
     this.items = Game.current.inv.items.filter(filter);
+    this.update();
     this.open();
+  }
+
+
+
+  update() {
+    this.box.setContent('test');
+    panels.screen.render();
   }
 }

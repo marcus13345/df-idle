@@ -13,7 +13,7 @@ import { View } from './View.js';
 import { ActionsView } from './view/ActionsView.js';
 import { tasks } from '@tasks';
 
-const clamp = (min, max, value) => Math.min(Math.max(value, min), max);
+const clamp = (min: number, max: number, value: number) => Math.min(Math.max(value, min), max);
 
 // TODO move KeypressAcceptor to ui something idk
 export interface KeypressAcceptor {
@@ -46,7 +46,7 @@ export class Menu implements Renderable {
   }
 
   constructor() {
-    panels.right.on('keypress', (evt, key) => {
+    panels.right.on('keypress', (evt: {}, key: {full: string}) => {
       
       if (key.full === 'left') {
         this.regressView();

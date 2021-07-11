@@ -118,7 +118,7 @@ export default class Time extends Serializable implements Renderable {
     setTimeout(this.doTick.bind(this), 0);
   }
   
-  advanceTime(seconds) {
+  advanceTime(seconds: number) {
     this.minute += seconds / 60;
     this.normalize()
   }

@@ -25,7 +25,7 @@ export default class MultiplayerView extends View {
 	render() {
 		if(mdns.players.length === 0) return `{center}${getTheme().normal('No friends online')}{/center}`;
 		return mdns.players.map((player, i) => {
-			if(i === this.selected) return ' ' + getTheme().selected(' ❯ ' + player.toString());
+			if(i === this.selected) return ' ' + getTheme().bright(' ❯ ' + player.toString());
 			else return '    ' + getTheme().normal(player.toString());
 		}).join('\n');
 	};

@@ -21,7 +21,7 @@ export class TaskList extends Serializable implements Renderable {
     this.tasks = [...this.tasks, task];
   }
 
-  removeTask(task) {
+  removeTask(task: TaskState<any>) {
     this.tasks = this.tasks.filter(v => v !== task);
   }
 

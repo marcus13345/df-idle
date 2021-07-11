@@ -29,7 +29,7 @@ export type GiftMessage = {
 
 export default network;
 
-export async function ready(name) {
+export async function ready(name: string) {
 	const port = await getPort({port: getPort.makeRange(52300, 52399)});
 	mdns.publish({
 		type: 'dfi',
@@ -39,7 +39,7 @@ export async function ready(name) {
 	const wss = new WebSocket.Server({ port });
 	wss.on('connection', function connection(ws) {
 		ws.on('message', function incoming(message) {
-			const {pawns: pawnJsons, from} = JSON.parse(message);
+			const {pawns: pawnJsons, from} = JSON.parse(message.toString());
 			const pawns = [];
 			for(const pawnJson of pawnJsons) {
 				const pawn: Pawn = Pawn.fromJson(pawnJson);

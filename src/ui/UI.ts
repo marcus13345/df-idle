@@ -1,4 +1,3 @@
-
 import chalk from 'chalk';
 import blessed from 'neo-blessed';
 import ansi from 'sisteransi';
@@ -99,7 +98,8 @@ export function start() {
 
   process.stdout.write(ansi.cursor.hide);
 
-  screen.key(['C-c'], function(ch, key) {
+  // todo make a real menu
+  screen.key(['C-c'], function() {
     process.stdout.write(ansi.cursor.show);
     setTimeout(_ => {
       process.exit(0);

@@ -7,11 +7,11 @@ import { panels } from './UI.js';
 export class Popup {
   box;
 
-  static show(content) {
+  static show(content: string) {
     new Popup(content)
   }
 
-  private constructor(content) {
+  private constructor(content: string) {
     this.box = blessed.box({
       top: 'center',
       left: 'center',
@@ -21,7 +21,7 @@ export class Popup {
       tags: true,
       ...boxStyle(),
     });
-    this.box.on('keypress', (evt, key) => {
+    this.box.on('keypress', (evt: {}, key: {full: string}) => {
       if(key.full === 'escape' || key.full === 'enter') {
         Game.current.clock.start();
         panels.screen.remove(this.box);

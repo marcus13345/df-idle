@@ -25,7 +25,7 @@ export class GiftPopup {
 			tags: true,
 			...boxStyle(),
 		});
-		this.box.on('keypress', (evt, key) => {
+		this.box.on('keypress', (evt: {}, key: {full: string}) => {
 			if(key.full === 'enter') {
 				this.send();
 			} if(key.full === 'escape' || key.full === 'enter') {
@@ -69,7 +69,7 @@ export class GiftPopup {
 		this.box.setContent(`${(() => {
 			let pawns = [];
 			for (const [pawn, qty] of this.pawns.entries()) {
-				const style = i === this.selected ? getTheme().selected : getTheme().normal;
+				const style = i === this.selected ? getTheme().bright : getTheme().normal;
 				if(qty > 0) {
 					pawns.push(style(`{|}${pawn.toString()}  `))
 				} else {

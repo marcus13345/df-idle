@@ -9,7 +9,7 @@ import { render, Renderable, setTitle, start } from './ui/UI.js';
 import { ready } from './multiplayer/mDNS.js';
 import faker from 'faker';
 
-let game = null;
+let game: Game = null;
 
 export class Game extends Frigid implements Tickable, Renderable {
   pawns: Pawn[] = [];
@@ -47,7 +47,7 @@ export class Game extends Frigid implements Tickable, Renderable {
     });
   }
 
-  advanceSelection(number) {
+  advanceSelection(number: number) {
     let index = this.pawns.indexOf(this.selected);
     this.selected = this.pawns[Math.min(Math.max(index + number, 0), this.pawns.length - 1)];
   }

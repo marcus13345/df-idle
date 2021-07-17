@@ -7,7 +7,7 @@ export type ItemID = string;
 const items = new Map<ItemID, Item<any>>();
 
 // ITEMS SHALL BE SINGULAR
-export class Item<Data> extends Serializable {
+export class Item<Data = any> extends Serializable {
 
   name = '';
   id: ItemID = '';
@@ -60,7 +60,7 @@ export class ItemState<Data> extends Serializable implements Renderable {
     return items.get(this.itemId);
   }
 
-  constructor(item: Item<Data>, amount: number, data: Data) {
+  constructor(item: Item<Data>, amount: number, data: Data = null) {
     super();
     this.qty = amount;
     this.itemId = item.id;

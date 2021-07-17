@@ -30,7 +30,7 @@ export default class PawnsView extends View {
         let str = '';
         if(selected) {
           str += ` ${getTheme().bright(` ❯ ${pawn.toString()}`)}{|}${pawn.status} \n`;
-          str += `    ${getTheme().normal('Energy')}{|}${progressbar(pawn.energy / 100, (panels.right.width - 4) / 2)} \n`;
+          // str += `    ${getTheme().normal('Energy')}{|}${progressbar(pawn.energy / 100, (panels.right.width - 4) / 2)} \n`;
         } else {
           str += `    ${getTheme().normal(pawn.toString())}{|}${pawn.status} `;
         }

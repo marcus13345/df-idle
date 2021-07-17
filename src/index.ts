@@ -8,6 +8,7 @@ import { Game } from '@game';
 import { isStarted, stop } from './ui/UI.js';
 import { writeFileSync } from 'fs';
 
+console.clear();
 
 function gracefulShutdown() {
   if(isStarted()) {
@@ -34,18 +35,26 @@ console.log('df-idle: Loading extensions');
 const extensionsPath = resolve(parse(fileURLToPath(import.meta.url)).dir, '../content');
 
 const extensions = walkSync(extensionsPath)
-  .map(path => resolve(extensionsPath, path))
-  .filter(path => lstatSync(path).isFile())
-  .filter(path => parse(path).ext === '.js');
-  // .map(path => import(path));
+  .map(path => [path, resolve(extensionsPath, path)])
+  .filter(path => lstatSync(path[1]).isFile())
+  .filter(path => parse(path[1]).ext === '.js');
 
 console.log('found', extensions.length, 'extensions');
 
 for(const path of extensions) {
-  console.log('=== [', path, '] ===');
-  await import(path);
+  console.log('=== [', path[0], '] ===');
+  await import(path[1]);
   console.log();
 }
+
+console.log('Setup Complete.');
+
+
+for(let seconds = 2; seconds > 0; seconds --) {
+  process.stdout.write('Starting DF-Idle in ' + seconds + '\r');
+  await new Promise(res => setTimeout(res, 1000));
+}
+console.log();
 
 // TODO move render logic into game, so that the ui doesnt exist until the game does...
 // maybe, i mean, an argument could be made for not that, because the game

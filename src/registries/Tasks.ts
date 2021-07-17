@@ -6,119 +6,94 @@ import { Game } from '../Game.js';
 import { panels } from '../ui/UI.js';
 import { progressbar, ProgressbarStyle } from '../Progressbar.js';
 
-export const tasks: Map<string, Task<any>> = new Map();
-export type TaskCategory = "self" | "work" | "craft" | "idle";
+const tasks: Map<string, Task<unknown, unknown>> = new Map();
+type WorkFunction<Data, State> = (taskState: TaskState<Data, State>, dtime: number) => void;
+type InitFunction<Data, State> = (data: Data) => State;
 
-export class Task<Data> {
+export class Task<Data, State> {
   id: string;
-  work: number;
-  name: string | ((data: Data) => string);
-  status: string;
-  tasklistVisibility: boolean;
-  category: TaskCategory;
-  completionEvent: (data: Data) => void;
+  fn: WorkFunction<Data, State>;
+  init: InitFunction<Data, State>;
+  name: string;
+  toString: (data: Data, state: State) => string;
 
-  setTasklistVisibility(b: boolean) {
-    this.tasklistVisibility = b;
+  constructor(id: string) {
+    this.id = id;
+    tasks.set(id, this);
+  }
+
+  setInitiate(init: InitFunction<Data, State>) {
+    this.init = init;
     return this;
   }
 
-  setName(name: string | ((data: Data) => string)) {
+  setFunction(fn: WorkFunction<Data, State>) {
+    this.fn = fn;
+    return this;
+  }
+
+  setName(name: string) {
     this.name = name;
     return this;
   }
 
-  setStatus(s: string) {
-    this.status = s;
+  setToString(fn: (data: Data, state: State) => string) {
+    this.toString = fn;
     return this;
-  }
-
-  setCategory(c: TaskCategory) {
-    this.category = c;
-    return this;
-  }
-
-  setWork(n: number) {
-    this.work = n;
-    return this;
-  }
-
-  setCompletionEvent(fn: (data: Data) => void) {
-    this.completionEvent = fn;
-    return this;
-  }
-
-  constructor(id: string) {
-    this.id = id;
-    this.tasklistVisibility = true;
-    this.category = "work";
-    tasks.set(this.id, this);
   }
 }
 
-export class TaskState<T> extends Serializable {
+export class TaskState<Data, State> extends Serializable {
   taskId: string;
-  progress: number;
+  workFn: WorkFunction<Data, State>;
+  x: number;
+  y: number;
+  data: Data;
+  completed: boolean = false;
   worker: Pawn;
-  data: T;
+  state: State;
 
-  ctor() {
-    // retest completion when loaded, JUST IN CASE
-    this.testCompletion();
-  }
-
-  constructor(task: Task<T>, data: T = {} as T) {
+  constructor(task: Task<Data, State>, data: Data) {
     super();
-    this.taskId = task.id;
-    this.progress = 0;
-    this.worker = null;
-    // preset the data to nothing JIC
     this.data = data;
+    this.taskId = task.id;
+    this.workFn = this.task.fn.bind(this);
   }
 
-  stopJob() {
-    this.worker = null;
+  setLocation(x: number, y: number) {
+    this.x = x;
+    this.y = y;
   }
 
-  doWork(work = 1, pawn: Pawn) {
-    this.worker = pawn;
-    this.progress += work;
-    this.testCompletion();
+  get task(): Task<Data, State> {
+    // casting because the id this is associated with
+    // should have the datatype of the task it was
+    // created with, but it stored as unknown
+    return tasks.get(this.taskId) as Task<Data, State>;
   }
 
-  testCompletion() {
-    if (this.taskId && this.completed) {
-      this.task.completionEvent(this.data);
-      Game.current.board.removeTask(this);
-    }
+  get name() {
+    return this.task.name;
   }
 
-  free() {
-    this.worker = null;
+  work(dtime: number) {
+    this.workFn(this, dtime);
   }
 
   claim(pawn: Pawn) {
     this.worker = pawn;
   }
 
-  get completion() {
-    return Math.min(1, this.progress / this.task.work);
-  }
-
-  get task() {
-    return tasks.get(this.taskId);
-  }
-
-  get completed() {
-    return this.completion >= 1;
+  unclaim() {
+    this.worker = null;
   }
 
   toString() {
-    // HACK magic number 2 here, is the border
-    // of the panel
-    const width = panels.left.width - 2;
-    const left = ' ' + this.task.name + ' ' + (this.worker?.toString() || chalk.bold.black('Queued'));
-    const bar = width - 2;
-    return `${left}\n ${progressbar(this.completion, bar, ProgressbarStyle.progress)}\n`;
+    return this.task.toString(this.data, this.state)
   }
 }
+
+// export interface TaskProvider {
+//   hasTask(): boolean;
+//   getTask(): TaskState<unknown, unknown>;
+// }

@@ -8,6 +8,7 @@ import Time, { Tickable } from './Time.js';
 import { render, Renderable, setTitle, start } from './ui/UI.js';
 import { ready } from './multiplayer/mDNS.js';
 import faker from 'faker';
+import { World } from '@world';
 
 let game: Game = null;
 
@@ -19,6 +20,7 @@ export class Game extends Frigid implements Tickable, Renderable {
   menu: Menu;
   clock: Time;
   name: string;
+  world: World;
 
   [DEBUG] = true;
 
@@ -57,6 +59,7 @@ export class Game extends Frigid implements Tickable, Renderable {
     start();
     this.name ??= faker.address.city();
     setTitle(this.name);
+    this.world ??= new World();
     this.pawns ??= [];
     this.selected ??= this.pawns[0] || null;
     this.menu = new Menu();
@@ -71,7 +74,7 @@ export class Game extends Frigid implements Tickable, Renderable {
   }
 
   static serializationDependencies() {
-    return [ Pawn, Inventory, TaskList, Time ];
+    return [ Pawn, Inventory, TaskList, Time, World ];
   }
 
   render() {

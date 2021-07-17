@@ -60,7 +60,7 @@ export class SelectItem {
         this.emitter.emit('selected', this.selectedItem.take(this.qty));
         this.close();
       } else if(key.full === 'down') {
-
+        
       }
     });
     this.items = Game.current.inv.items.filter(filter);

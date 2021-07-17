@@ -56,7 +56,7 @@ export const SANDSTONE_PEBBLE = new Item()
   .setName("Sandstone Pebble")
   .setId('core:sandstone-pebble')
 
-export const SLATE_NORMAL = new Item()
+export const SLATE = new Item()
   .setName("Slate")
   .setId('core:slate')
 

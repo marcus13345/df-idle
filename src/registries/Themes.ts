@@ -54,7 +54,7 @@ export const backupTheme: Theme = {
     selected: chalk.ansi256(117).inverse
   },
   border: {
-    focused: '#ffffff',
+    focused: '#00ff00',
     normal: '#888888'
   },
   progressBar: {

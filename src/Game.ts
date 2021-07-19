@@ -80,5 +80,7 @@ export class Game extends Frigid implements Tickable, Renderable {
   render() {
     this.menu.render();
     this.board.render();
+    // TODO this logic dont make sense
+    return '';
   }
 }

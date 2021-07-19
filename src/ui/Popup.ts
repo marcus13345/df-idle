@@ -11,7 +11,7 @@ export class Popup {
     new Popup(content)
   }
 
-  private constructor(content: string) {
+  protected constructor(content: string) {
     this.box = blessed.box({
       top: 'center',
       left: 'center',

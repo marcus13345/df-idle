@@ -30,6 +30,7 @@ export const LOG = new Item()
 
 export const STICK = new Item()
   .setName("Stick")
+  .plural('Sticks')
   .setId('core:resources/stick')
 
 export const PLANT_FIBRES = new Item()

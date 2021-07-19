@@ -4,11 +4,12 @@ import { Task, TaskState } from "@tasks";
 import { Serializable } from "frigid";
 import { RESOURCE_COLLECTION_TASK } from "./world/ResourceCollectionTask.js";
 
+const explorationConstant = 0.001; // km ish
+
 export class World extends Serializable {
   places: PlaceState[] = [];
 
-  distanceExplored = 0; // km ish
-  explorationConstant = 0.001; // km ish
+  distanceExplored: number; // km ish
 
   home: PlaceState = null;
 
@@ -18,7 +19,7 @@ export class World extends Serializable {
 
   explore() {
     for(const [id, place] of places) {
-      const threshold = (this.explorationConstant * place.frequency);
+      const threshold = (explorationConstant * place.frequency);
       if(Math.random() <= threshold) {
         const angle = Math.random() * Math.PI * 2
         const x = Math.sin(angle) * this.distanceExplored;
@@ -34,10 +35,11 @@ export class World extends Serializable {
         this.places.push(newPlaceState);
       }
     }
-    this.distanceExplored += this.explorationConstant;
+    this.distanceExplored += explorationConstant;
   }
 
   ctor() {
+    this.distanceExplored ??= 0;
     this.home ??= null;
     this.places ??= [];
     if(this.home === null) {

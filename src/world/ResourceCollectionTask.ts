@@ -17,7 +17,13 @@ export const RESOURCE_COLLECTION_TASK =
     
   }))
   .setToString((data, state) => {
-    return 'Collect ' + data.node.resources.item.name + ' from ' + data.node.place.place.name;
+    return 'Collect ' +
+      data.qty +
+      ' ' +
+      (data.qty === 1 ? data.node.resources.item.name.singular : 
+        data.node.resources.item.name.plural) +
+      ' from ' +
+      data.node.place.place.name;
   })
   .setInitiate((data: Data) => {
     return {

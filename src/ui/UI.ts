@@ -5,7 +5,7 @@ import { boxStyle, getTheme } from '@themes';
 export { Popup } from './Popup.js';
 
 export interface Renderable {
-	render(): void
+	render(mode?: RenderMode): string
 }
 
 let leftPanel: any;
@@ -58,7 +58,7 @@ export function render(thing?: Renderable) {
 export function start() {
   assertNotStarted();
 
-  process.stdout.write('\x1b[?1049h');
+  // process.stdout.write('\x1b[?1049h');
 
   screen = blessed.screen({
     smartCSR: true,
@@ -99,12 +99,12 @@ export function start() {
   process.stdout.write(ansi.cursor.hide);
 
   // todo make a real menu
-  screen.key(['C-c'], function() {
-    process.stdout.write(ansi.cursor.show);
-    setTimeout(_ => {
-      process.exit(0);
-    })
-  });
+  // screen.key(['C-c'], function() {
+  //   process.stdout.write(ansi.cursor.show);
+  //   setTimeout(_ => {
+  //     process.exit(0);
+  //   })
+  // });
 
   screen.key('f2', () => {
     rightPanel.focus();
@@ -120,7 +120,7 @@ export function start() {
 
 export function stop() {
   screen.destroy();
-  process.stdout.write('\x1b[?1049l');
+  // process.stdout.write('\x1b[?1049l');
 }
 
 // move to some debugging shit, idk
@@ -145,3 +145,9 @@ ansiTestCard += '{/center}';
 export {
   ansiTestCard
 };
+
+export enum RenderMode {
+  ONELINE,
+  DETAILS,
+  DYNAMIC
+}

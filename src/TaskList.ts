@@ -40,6 +40,7 @@ export class TaskList extends Serializable implements Renderable {
     } ${
       getTheme().dimmed(task.worker?.toString() ?? '')
     }`).join('\n')}`);
+    return '';
     // return this.tasks.map(task => task.toString()).join('\n');
   }
 }

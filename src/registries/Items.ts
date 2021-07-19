@@ -9,13 +9,22 @@ const items = new Map<ItemID, Item<any>>();
 // ITEMS SHALL BE SINGULAR
 export class Item<Data = any> extends Serializable {
 
-  name = '';
+  name = {
+    singular: '',
+    plural: ''
+  }
   id: ItemID = '';
   props: Map<string, any> = new Map();
 
   setName(name: string) {
-    this.name = name;
+    this.name.singular = name;
+    this.name.plural = name;
     this.register(false);
+    return this;
+  }
+
+  plural(name: string) {
+    this.name.plural = name;
     return this;
   }
 
@@ -27,7 +36,7 @@ export class Item<Data = any> extends Serializable {
 
   register(force = true) {
     if((!this.id || !this.name) && !force) return;
-    console.log('Added item', (this.name ?? "[No Name]").padStart(20, ' '), `| (${this.id})`)
+    console.log('Added item', (this.name.singular ?? "[No Name]").padStart(20, ' '), `| (${this.id})`)
     items.set(this.id, this);
     return this;
   }

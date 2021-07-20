@@ -1,5 +1,5 @@
 import { Pawn } from '../Pawn.js';
-import { panels, Renderable } from '@ui';
+import { panels, Renderable } from './UI.js';
 import { Game } from '../Game.js';
 import { progressbar, stats } from '../Progressbar.js';
 import { Popup } from './Popup.js';

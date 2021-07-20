@@ -6,7 +6,7 @@ import faker from 'faker';
 import chalk from 'chalk';
 import { Item } from '../registries/Items.js';
 import WebSocket from 'ws';
-import { Popup } from '../ui/Popup.js';
+import { Popup } from '@ui';
 import { inspect } from 'util'
 import { Pawn } from '../Pawn.js';
 import { Game } from '../Game.js';

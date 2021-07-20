@@ -1,7 +1,7 @@
 import { Game } from "@game";
 import { ItemState } from "@items";
 import { boxStyle, getTheme } from "@themes";
-import { panels } from "@ui";
+import { panels } from "./UI";
 import EventEmitter from "events";
 import blessed from 'neo-blessed';
 

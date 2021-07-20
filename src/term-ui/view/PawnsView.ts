@@ -2,7 +2,7 @@ import { getTheme } from "@themes";
 import { Game } from "../../Game.js";
 import { progressbar } from "../../Progressbar.js";
 import { PawnDetails } from "../PawnDetails.js";
-import { panels } from "@ui";
+import { panels } from "../UI";
 import { View } from "../View.js";
 
 export default class PawnsView extends View {

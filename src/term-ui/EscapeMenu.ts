@@ -1,6 +1,6 @@
 import { Game } from "@game";
 import { boxStyle, getTheme } from "@themes";
-import { panels } from "@ui";
+import { panels } from "./UI.js";
 import blessed from 'neo-blessed';
 import { quit, restart } from "../index.js";
 
@@ -25,10 +25,6 @@ export class EscapeMenu {
       top: 3,
       left: 'center',
       width: 20,
-
-
-
-      
       height: 'shrink',
       content: '',
       tags: true,

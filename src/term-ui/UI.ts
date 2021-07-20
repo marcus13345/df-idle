@@ -3,6 +3,7 @@ import blessed from 'neo-blessed';
 import ansi from 'sisteransi';
 import { boxStyle, getTheme } from '@themes';
 export { Popup } from './Popup.js';
+export { Menu } from './Menu.js'
 
 export interface Renderable {
 	render(mode?: RenderMode): string

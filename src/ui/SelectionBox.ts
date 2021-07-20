@@ -1,4 +1,4 @@
-import { Renderable, RenderMode } from './UI.js';
+import { Renderable, RenderMode } from '@ui';
 import { KeypressAcceptor } from './Menu.js';
 import { getTheme } from '@themes';
 

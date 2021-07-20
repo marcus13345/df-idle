@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import blessed from 'neo-blessed';
 import { Game } from '../Game.js';
 import { boxStyle, getTheme } from '@themes';
-import { panels } from './UI.js';
+import { panels } from '@ui';
 
 export class Popup {
   box;

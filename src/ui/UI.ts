@@ -29,15 +29,15 @@ export function isStarted() {
 
 export const panels = {
   get left() {
-    assertStarted()
+    assertStarted();
     return leftPanel;
   },
   get right() {
-    assertStarted()
+    assertStarted();
     return rightPanel;
   },
   get screen() {
-    assertStarted()
+    assertStarted();
     return screen;
   }
 }

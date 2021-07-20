@@ -1,7 +1,7 @@
 import { getTheme } from '@themes';
 import { Serializable } from 'frigid';
 import { Task, TaskState } from './registries/Tasks.js';
-import { render, Renderable, panels } from './ui/UI.js';
+import { render, Renderable, panels } from '@ui';
 
 export class TaskList extends Serializable implements Renderable {
   tasks: TaskState<unknown, unknown>[] = [];

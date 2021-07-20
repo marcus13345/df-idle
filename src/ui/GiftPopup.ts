@@ -5,7 +5,7 @@ import { ItemState } from '../registries/Items.js';
 import { Player } from "../multiplayer/Player";
 import { Pawn } from '../Pawn.js';
 import { getTheme, boxStyle } from '@themes';
-import { panels } from './UI.js';
+import { panels } from '@ui';
 
 export class GiftPopup {
 	box;

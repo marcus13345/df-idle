@@ -5,7 +5,7 @@ import { TaskList } from './TaskList.js';
 import { Inventory } from './Inventory.js';
 import { Menu } from './ui/Menu.js';
 import Time, { Tickable } from './Time.js';
-import { render, Renderable, setTitle, start } from './ui/UI.js';
+import { render, Renderable, setTitle, start } from '@ui';
 import { ready } from './multiplayer/mDNS.js';
 import faker from 'faker';
 import { World } from '@world';

@@ -3,7 +3,7 @@ import faker from 'faker';
 import { Task, TaskState } from './registries/Tasks.js';
 import Time, { Tickable } from './Time.js';
 import { Game } from './Game.js';
-import { render, Renderable, RenderMode } from './ui/UI.js';
+import { render, Renderable, RenderMode } from '@ui';
 import { Memory } from './Memory.js';
 import { getTheme } from '@themes';
 

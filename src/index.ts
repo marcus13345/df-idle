@@ -7,75 +7,12 @@ import { Game } from '@game';
 import { isStarted, stop, render } from '@ui';
 import { writeFileSync } from 'fs';
 import ansi from 'sisteransi';
-import { spawn } from 'child_process';
 import cluster from 'cluster';
-import chokidar from 'chokidar';
+if(cluster.isMaster) cluster.setupMaster();
+import { setInitialize, start } from './Clustering.js';
 
-const hotReload = true;
-let restartTimer: NodeJS.Timeout = null;
-
-let worker: cluster.Worker = null;
-function createWorker() {
-  start();
-
-  function start() {
-    if (cluster.isMaster) {
-      worker = cluster.fork();
-      worker.on('message', (message) => {
-        if(message === 'ipc-restart') {
-          worker.on('exit', () => {
-            setTimeout(createWorker, 0);
-          })
-          worker.kill();
-        } else if (message === 'ipc-quit') {
-          worker.on('exit', () => {
-            process.exit(0);
-          })
-          worker.kill();
-        }
-      });
-    }
-  }
-}
-
-// from any cluster context, gracefully exit if needed, and begin anew!
-export function restart() {
-  if (cluster.isWorker) {
-    process.send('ipc-restart');
-  } else if(worker) {
-    worker.on('exit', () => {
-      setTimeout(createWorker, 0);
-    })
-    worker.kill();
-  } else {
-    createWorker();
-  }
-}
-
-export function quit() {
-  if (cluster.isWorker) {
-    process.send('ipc-quit');
-  }
-}
-
-if (cluster.isWorker) {
-  begin();
-} else {
-  // TODO make hotreload actually bring a popup on the client
-  // so that the user should press enter to enable a reload.
-  if(hotReload) {
-    chokidar.watch('./out').on('all', (evt, path) => {
-      appendFileSync('log.log', evt + ' ' + path + '\n');
-      if(restartTimer) clearTimeout(restartTimer)
-      restartTimer = setTimeout(() => {
-        restart();
-        restartTimer = null;
-      }, 1000);
-    })
-  } else {
-    createWorker();
-  }
-}
+setInitialize(begin);
+start();
 
 async function begin() {
   console.clear();

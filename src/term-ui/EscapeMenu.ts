@@ -2,7 +2,7 @@ import { Game } from "@game";
 import { boxStyle, getTheme } from "@themes";
 import { panels } from "./UI.js";
 import blessed from 'neo-blessed';
-import { quit, restart } from "../index.js";
+import { quit, restart } from "../Clustering.js";
 
 // TODO convert all these popup-y things to be View based
 // make them be boxes that have a view

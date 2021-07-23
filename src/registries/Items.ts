@@ -1,6 +1,5 @@
 import { Serializable } from 'frigid';
 import { getTheme } from '@themes';
-import { Renderable } from '@ui';
 import { osrsNumber } from '../Util.js';
 
 export type ItemID = string;
@@ -53,7 +52,7 @@ export class Item<Data = any> {
   }
 }
 
-export class ItemState<Data> extends Serializable implements Renderable {
+export class ItemState<Data> extends Serializable {
   qty: number;
   itemId: ItemID;
   data: Data;

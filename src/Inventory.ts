@@ -1,9 +1,9 @@
 import { Serializable } from 'frigid';
 import { Game } from './Game.js';
 import { Item, ItemState } from './registries/Items.js';
-import { Renderable, Popup } from '@ui';
+import { Popup } from '@ui';
 
-export class Inventory extends Serializable implements Renderable {
+export class Inventory extends Serializable {
   items: ItemState<any>[];
 
   ctor() {

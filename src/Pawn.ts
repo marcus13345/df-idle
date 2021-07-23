@@ -3,13 +3,13 @@ import faker from 'faker';
 import { Task, TaskState } from './registries/Tasks.js';
 import Time, { Tickable } from './Time.js';
 import { Game } from './Game.js';
-import { render, Renderable, RenderMode } from '@ui';
+// import { render, Renderable, RenderMode } from '@ui';
 import { Memory } from './Memory.js';
 import { getTheme } from '@themes';
 
 // TODO add stats getter to return % of all stats
 
-export class Pawn extends Serializable implements Tickable, Renderable {
+export class Pawn extends Serializable implements Tickable {
   name: {
     first: string,
     last: string
@@ -80,25 +80,25 @@ export class Pawn extends Serializable implements Tickable, Renderable {
     return [TaskState]
   }
 
-  toString() {
-    return this.render(RenderMode.ONELINE);
-  }
+  // toString() {
+  //   return this.render(RenderMode.ONELINE);
+  // }
 
-  render(mode: RenderMode): string {
-    if(mode === RenderMode.ONELINE) {
-      if(this.name) {
-        return this.name.first + ' ' + this.name.last;
-      } else {
-        return '[Object Pawn]';
-      }
-    } else if (mode === RenderMode.DETAILS) {
-      return `${
-        this.toString()
-      }{|}${
-        this.status
-      }\nDETAILS\nDETAILS`
-    }
-  }
+  // render(mode: RenderMode): string {
+  //   if(mode === RenderMode.ONELINE) {
+  //     if(this.name) {
+  //       return this.name.first + ' ' + this.name.last;
+  //     } else {
+  //       return '[Object Pawn]';
+  //     }
+  //   } else if (mode === RenderMode.DETAILS) {
+  //     return `${
+  //       this.toString()
+  //     }{|}${
+  //       this.status
+  //     }\nDETAILS\nDETAILS`
+  //   }
+  // }
 }
 
 // const task = 

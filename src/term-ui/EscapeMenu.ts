@@ -1,7 +1,8 @@
 import { Game } from "@game";
 import { boxStyle, getTheme } from "@themes";
-import { panels } from "@ui";
+import { panels } from "./UI.js";
 import blessed from 'neo-blessed';
+import { ProcessManager } from "../ProcessManager.js";
 
 // TODO convert all these popup-y things to be View based
 // make them be boxes that have a view
@@ -9,6 +10,7 @@ export class EscapeMenu {
 
   options = [
     'RESUME',
+    'RELOAD',
     'QUIT'
   ];
   selected = 0;
@@ -22,7 +24,7 @@ export class EscapeMenu {
     this.box = blessed.box({
       top: 3,
       left: 'center',
-      width: 30,
+      width: 20,
       height: 'shrink',
       content: '',
       tags: true,
@@ -43,8 +45,12 @@ export class EscapeMenu {
             break;
           }
           case 1: {
+            ProcessManager.restart();
+            break;
+          }
+          case 2: {
             Game.current.sync();
-            process.exit(0);
+            ProcessManager.quit();
           }
         }
       } else if(key.full === 'escape') {
@@ -60,11 +66,12 @@ export class EscapeMenu {
   }
 
   render() {
-    this.box.setContent(' Paused\n\n' + this.options.map((v, i) => {
+    const space = ' '.repeat(this.box.width / 2 - 4);
+    this.box.setContent(space + 'Paused\n\n' + this.options.map((v, i) => {
       if(i === this.selected) {
-        return ` ${getTheme().bright(v)} `;
+        return ` ❯ ${getTheme().bright(v)} `;
       } else {
-        return ` ${getTheme().normal(v)} `;
+        return `   ${getTheme().normal(v)} `;
       }
     }).join('\n'));
     panels.screen.render();

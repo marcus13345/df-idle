@@ -1,28 +1,23 @@
 import { Frigid, Serializable } from 'frigid';
-import { DEBUG } from 'frigid/out/Serializable.js';
 import { Pawn } from './Pawn.js';
 import { TaskList } from './TaskList.js';
 import { Inventory } from './Inventory.js';
-import { Menu } from './ui/Menu.js';
 import Time, { Tickable } from './Time.js';
-import { render, Renderable, setTitle, start } from './ui/UI.js';
+import { setTitle, start, update } from '@ui';
 import { ready } from './multiplayer/mDNS.js';
 import faker from 'faker';
 import { World } from '@world';
 
 let game: Game = null;
 
-export class Game extends Frigid implements Tickable, Renderable {
+export class Game extends Frigid implements Tickable {
   pawns: Pawn[] = [];
   selected: Pawn;
   inventory: Inventory;
   board: TaskList;
-  menu: Menu;
   clock: Time;
   name: string;
   world: World;
-
-  [DEBUG] = true;
 
   static get current(): Game {
     if (!game) throw new Error('Somehow called a game before it existed?');
@@ -33,7 +28,7 @@ export class Game extends Frigid implements Tickable, Renderable {
     for(const pawn of this.pawns) {
       pawn.tick();
     }
-    render();
+    update();
   }
 
   get inv() { return this.inventory; }
@@ -62,7 +57,6 @@ export class Game extends Frigid implements Tickable, Renderable {
     this.world ??= new World();
     this.pawns ??= [];
     this.selected ??= this.pawns[0] || null;
-    this.menu = new Menu();
     this.board ??= new TaskList();
     this.inventory ??= new Inventory();
     this.inventory.validate();
@@ -70,17 +64,9 @@ export class Game extends Frigid implements Tickable, Renderable {
     this.clock.thing = this;
     this.clock.start();
     ready(this.name);
-    render(this);
   }
 
   static serializationDependencies() {
     return [ Pawn, Inventory, TaskList, Time, World ];
-  }
-
-  render() {
-    this.menu.render();
-    this.board.render();
-    // TODO this logic dont make sense
-    return '';
   }
 }

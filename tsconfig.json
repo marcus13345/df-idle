@@ -13,7 +13,7 @@
 			"@tasks": ["./src/registries/Tasks"],
 			"@items": ["./src/registries/Items"],
 			"@world": ["./src/World"],
-			"@ui": ["./src/ui/UI"],
+			"@ui": ["./src/qt/index"],
 			"@game": ["./src/Game"]
 		},
     "noImplicitAny": true

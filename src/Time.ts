@@ -1,7 +1,6 @@
 import chalk from "chalk";
 import { Serializable } from "frigid";
 import { getTheme } from "@themes";
-import { Renderable } from "./ui/UI.js";
 
 type AbbreviatedMonthName = string;
 
@@ -19,7 +18,7 @@ const months: AbbreviatedMonthName[] = [
   'Oct', 'Nov', 'Dec'
 ]
 
-export default class Time extends Serializable implements Renderable {
+export default class Time extends Serializable {
   rate: number;
   paused = true;
 

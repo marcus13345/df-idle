@@ -1,13 +1,13 @@
 import { Serializable } from 'frigid';
 import { getTheme } from '@themes';
-import { Renderable } from '../ui/UI.js';
+import { osrsNumber } from '../Util.js';
 
 export type ItemID = string;
 
 const items = new Map<ItemID, Item<any>>();
 
 // ITEMS SHALL BE SINGULAR
-export class Item<Data = any> extends Serializable {
+export class Item<Data = any> {
 
   name = {
     singular: '',
@@ -52,7 +52,7 @@ export class Item<Data = any> extends Serializable {
   }
 }
 
-export class ItemState<Data> extends Serializable implements Renderable {
+export class ItemState<Data> extends Serializable {
   qty: number;
   itemId: ItemID;
   data: Data;
@@ -77,7 +77,10 @@ export class ItemState<Data> extends Serializable implements Renderable {
   }
 
   render() {
-    return getTheme().normal(` ${this.item.name}{|}${this.qty} `);
+    return getTheme().normal(` ${osrsNumber(this.qty)} ${(() => {
+      if(this.qty === 1) return this.item.name.singular;
+      else return this.item.name.plural;
+    })()} `);
   }
 }
 

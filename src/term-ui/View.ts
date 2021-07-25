@@ -1,4 +1,4 @@
-import { Renderable } from './UI.js';
+import { Renderable } from './UI';
 import { KeypressAcceptor } from './Menu.js';
 
 export abstract class View implements Renderable, KeypressAcceptor {

@@ -1,9 +1,8 @@
 import { getTheme } from '@themes';
 import { Serializable } from 'frigid';
 import { Task, TaskState } from './registries/Tasks.js';
-import { render, Renderable, panels } from './ui/UI.js';
 
-export class TaskList extends Serializable implements Renderable {
+export class TaskList extends Serializable {
   tasks: TaskState<unknown, unknown>[] = [];
 
   clear() {
@@ -34,13 +33,11 @@ export class TaskList extends Serializable implements Renderable {
   }
 
   render() {
-    // const width = tasksPanel.width;
-    panels.left.setContent(`${this.tasks.map(task => `${
-      getTheme().normal(task.toString())
-    } ${
-      getTheme().dimmed(task.worker?.toString() ?? '')
-    }`).join('\n')}`);
-    return '';
-    // return this.tasks.map(task => task.toString()).join('\n');
+    // panels.left.setContent(`${this.tasks.map(task => `${
+    //   getTheme().normal(task.toString())
+    // } ${
+    //   getTheme().dimmed(task.worker?.toString() ?? '')
+    // }`).join('\n')}`);
+    // return '';
   }
 }

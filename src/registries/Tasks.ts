@@ -3,7 +3,6 @@ import EventEmitter from 'events';
 import chalk from 'chalk';
 import { Pawn } from '../Pawn.js';
 import { Game } from '../Game.js';
-import { panels } from '../ui/UI.js';
 import { progressbar, ProgressbarStyle } from '../Progressbar.js';
 
 const tasks: Map<string, Task<unknown, unknown>> = new Map();

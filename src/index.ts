@@ -41,9 +41,8 @@ ensureDirSync(parse(saveFile).dir);
 
 // loadExtensions();
 
-for (let seconds = 0; seconds > 0; seconds--) {
+for (let seconds = 0; seconds > 0; seconds --) {
   process.stdout.write('Starting ' + APPLICATION_NAME + ' in ' + seconds + '\r');
-  await new Promise(res => setTimeout(res, 1000));
 }
 process.stdout.write('Starting ' + APPLICATION_NAME + ' in ' + 0 + '\n');
 // console.clear();

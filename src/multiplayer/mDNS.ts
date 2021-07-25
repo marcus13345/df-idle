@@ -11,6 +11,7 @@ import { inspect } from 'util'
 import { Pawn } from '../Pawn.js';
 import { Game } from '../Game.js';
 import { Player } from './Player.js';
+import { MDNS_TYPE } from '../Constants.js';
 
 const mdns = bonjour();
 const ID = uuid.v4();
@@ -32,7 +33,7 @@ export default network;
 export async function ready(name: string) {
 	const port = await getPort({port: getPort.makeRange(52300, 52399)});
 	mdns.publish({
-		type: 'dfi',
+		type: MDNS_TYPE,
 		name,
 		port: port
 	});
@@ -64,7 +65,7 @@ export async function ready(name: string) {
 }
 
 mdns.find({
-	type: 'dfi'
+	type: MDNS_TYPE
 }, (service) => {
 	const p = new Player();
 	p.name = service.name;

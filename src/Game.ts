@@ -1,5 +1,4 @@
 import { Frigid, Serializable } from 'frigid';
-import { DEBUG } from 'frigid/out/Serializable.js';
 import { Pawn } from './Pawn.js';
 import { TaskList } from './TaskList.js';
 import { Inventory } from './Inventory.js';
@@ -19,8 +18,6 @@ export class Game extends Frigid implements Tickable {
   clock: Time;
   name: string;
   world: World;
-
-  [DEBUG] = true;
 
   static get current(): Game {
     if (!game) throw new Error('Somehow called a game before it existed?');

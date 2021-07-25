@@ -1,5 +1,10 @@
 import { Game } from '@game';
-import { QLabel, QWidget } from '@nodegui/nodegui';
+import {
+  QLabel,
+  QTabWidget,
+  QWidget,
+  QIcon
+} from '@nodegui/nodegui';
 import { View } from './View.js';
 
 // 40x30
@@ -9,14 +14,14 @@ export class GameView extends View {
   game: Game;
   title: QLabel;
   left: QWidget;
-  right: QWidget;
+  right: QTabWidget;
 
   addComponents(): void {
     this.addLayout();
 
     this.title = new QLabel();
     this.left = new QWidget();
-    this.right = new QWidget();
+    this.right = new QTabWidget();
 
     this.title.setText(this.game.name);
 
@@ -29,6 +34,14 @@ export class GameView extends View {
     this.layout.addWidget(this.title, 0, 0, 1, w);
     this.layout.addWidget(this.left, 1, 0, h - 1, w / 2);
     this.layout.addWidget(this.right, 1, w / 2, h - 1, w / 2);
+
+    const page1 = new QLabel();
+    page1.setText('Page 1');
+    const page2 = new QLabel();
+    page2.setText('Page 2');
+
+    this.right.addTab(page1, new QIcon(), "Page 1");
+    this.right.addTab(page2, new QIcon(), "Page 2");
   }
 
   constructor(game: Game) {
@@ -36,3 +49,4 @@ export class GameView extends View {
     this.game = game;
   }
 }
+

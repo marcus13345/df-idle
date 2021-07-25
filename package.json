@@ -5,7 +5,11 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
-    "@nodegui/nodegui": "^0.33.3",
+    "@babel/core": "^7.14.8",
+    "@babel/preset-env": "^7.14.8",
+    "@nodegui/nodegui": "^0.34.0",
+    "@rollup/plugin-alias": "^3.1.4",
+    "@rollup/plugin-babel": "^5.3.0",
     "@types/blessed": "^0.1.17",
     "@types/bonjour": "^3.5.8",
     "@types/chai": "^4.2.19",
@@ -28,11 +32,13 @@
     "get-port": "^5.1.1",
     "mocha": "^9.0.1",
     "module-alias": "^2.2.2",
+    "multiview": "^3.0.1",
     "neo-blessed": "^0.2.0",
     "node-dev": "^7.0.0",
     "node-ipc": "^10.0.2",
     "nodemon": "^2.0.7",
     "printable-characters": "^1.0.42",
+    "rollup": "^2.53.3",
     "sisteransi": "^1.0.5",
     "supervisor": "^0.12.0",
     "typescript": "^4.3.2",
@@ -43,15 +49,19 @@
     "yarn": "^1.22.10"
   },
   "scripts": {
-    "compile:watch": "tsc --watch",
-    "start": "yarn x out/src/index.js",
-    "dev": "yarn x out/src/hot-index.js",
+    "compile": "yarn tsc & yarn rollup",
+    "start": "yarn qode bin/app.bundle.js",
+    "dev": "yarn x bin/ipc-tower.bundle.js",
     "prod": "git fetch && git pull && yarn && tsc && yarn start",
     "test": "mocha",
     "lint": "eslint src/**/*.ts",
     "web": "web-dev-server --open index.html --node-resolve --watch",
-    "profile": "node --inspect-brk --no-warnings --loader ./lib/aliases.mjs --enable-source-maps out/src/index.js",
-    "qx": "qode --no-warnings --loader ./lib/aliases.mjs",
-    "x":  "node --no-warnings --loader ./lib/aliases.mjs"
+    "profile": "yarn qode --inspect-brk bin/app.bundle.js",
+    "qode": "qode",
+    "x": "node",
+    "tsc": "tsc",
+    "tsc:watch": "yarn tsc --watch",
+    "rollup": "rollup --config rollup.config.js",
+    "rollup:watch": "yarn rollup --watch"
   }
 }

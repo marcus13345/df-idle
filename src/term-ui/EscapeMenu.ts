@@ -2,7 +2,7 @@ import { Game } from "@game";
 import { boxStyle, getTheme } from "@themes";
 import { panels } from "./UI.js";
 import blessed from 'neo-blessed';
-import { quit, restart } from "../ProcessManager.js";
+import { ProcessManager } from "../ProcessManager.js";
 
 // TODO convert all these popup-y things to be View based
 // make them be boxes that have a view
@@ -45,12 +45,12 @@ export class EscapeMenu {
             break;
           }
           case 1: {
-            restart();
+            ProcessManager.restart();
             break;
           }
           case 2: {
             Game.current.sync();
-            quit();
+            ProcessManager.quit();
           }
         }
       } else if(key.full === 'escape') {

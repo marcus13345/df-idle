@@ -2,17 +2,18 @@ import ipc from 'node-ipc';
 import {
   IPC_PATH,
   IPC_QUIT_EVENT,
-  IPC_RESTART_EVENT
+  IPC_RESTART_EVENT,
+  IPC_REQUEST_RESTART
 } from './Constants.js';
 import { spawn, ChildProcess } from 'child_process';
 import watch from 'watch';
+import chalk from 'chalk';
 
 ipc.config.silent = true;
 
-const exec = 'qode';
+const exec = 'yarn';
 const args = [
-  ...process.execArgv,
-  'out/src/index.js'
+  'start'
 ]
 
 ipc.serve(IPC_PATH, () => {
@@ -29,10 +30,10 @@ ipc.server.start();
 let proc: ChildProcess = null;
 
 function startProcess() {
-  console.log('starting process...');
   proc = spawn(exec, args, {
     stdio: 'inherit'
   });
+  console.log(`[${proc.pid}] ${chalk.grey(`${exec} ${args.join(' ')}`)}`);
   proc.on('exit', () => {
     console.log('process died');
     proc = null;
@@ -68,9 +69,9 @@ function fileChange() {
   // console.log(cluster.isMaster, evt, path);
   if(restartTimer) clearTimeout(restartTimer)
   restartTimer = setTimeout(() => {
-    restart();
+    ipc.server.broadcast(IPC_REQUEST_RESTART);
     restartTimer = null;
   }, 1000);
 }
 // chokidar.watch('./out').on('all', fileChange);
-watch.watchTree('./out', fileChange);
+watch.watchTree('./bin', fileChange);

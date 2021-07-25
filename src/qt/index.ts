@@ -2,7 +2,9 @@ import {
   QMainWindow, WidgetEventTypes
 } from '@nodegui/nodegui';
 import { APPLICATION_NAME } from '../Constants.js';
+import { ProcessManager } from '../ProcessManager.js';
 import { LoadingView } from './LoadingView.js';
+import { RequestReloadPopup } from './RequestReloadPopup.js';
 import { View } from './View.js';
 export { GameView } from './GameView.js';
 export { Popup } from './Popup.js';
@@ -26,13 +28,27 @@ win.setStyleSheet(`
     font-family: 'MxPlus IBM VGA 8x16';
     font-size: 16px;
   }
+  QTabWidget {
+    border: 1px solid white;
+  }
+  QTabWidget::pane {
+    background: black;
+    border: none;
+    border-radius: 0px;
+  } 
+  QTabBar::tab {
+    background: black;
+    color: cyan;
+    padding: 4px 12px;
+  } 
+  QTabBar::tab:selected { 
+    background: cyan;
+    color: black;
+  }
 `);
 win.show();
 (global as any).win = win;
 win.addEventListener(WidgetEventTypes.Paint, _ => _);
-win.addEventListener(WidgetEventTypes.UpdateRequest, () => {
-  console.log('sdfghj');
-});
 win.addEventListener('customContextMenuRequested', console.log)
 win.addEventListener('objectNameChanged', console.log)
 win.addEventListener('windowIconChanged', console.log)
@@ -63,6 +79,11 @@ export function update() {
 export function isStarted() {
   return win.isVisible();
 }
+
+ProcessManager.on('reload', () => {
+  RequestReloadPopup.show();
+  //
+})
 
 
 // HACK this is bullshit, :)

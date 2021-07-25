@@ -20,6 +20,7 @@
 	},
 	"include": [
 		"src/**/*.ts",
-		"content/**/*.ts"
+		"content/**/*.ts",
+    "ui-engine/**/*.ts"
 	]
 }

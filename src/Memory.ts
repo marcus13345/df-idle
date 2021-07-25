@@ -20,6 +20,10 @@ export type BirthMemory = ProtoMemory & {
 	location: string,
 }
 
+export type AnyMemory =
+    TravelMemory
+  | BirthMemory;
+
 export function stringify(memory: Memory): string {
 	switch(memory.type) {
 		case "birth": {

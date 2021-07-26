@@ -13,7 +13,9 @@ let connected = false;
 class ProcessManagerClass extends EventEmitter {
   quit() {
     if (connected) {
+      console.log('client sending quit event')
       ipc.of[name].emit(IPC_QUIT_EVENT);
+      process.exit(0);
     } else {
       process.exit(0);
     }
@@ -21,9 +23,12 @@ class ProcessManagerClass extends EventEmitter {
 
   restart() {
     if (connected) {
+      console.log('client emitting ipc restart')
       ipc.of[name].emit(IPC_RESTART_EVENT);
+      process.exit(0);
     } else {
-      process.exit(1);
+      console.log('eh?! not connected to tower... closing')
+      process.exit(0);
     }
   }
 }
@@ -41,3 +46,5 @@ ipc.connectTo(name, () => {
     ProcessManager.emit('reload');
   })
 });
+
+/////////////

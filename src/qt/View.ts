@@ -1,4 +1,5 @@
-import { QGridLayout, QMainWindow, QWidget } from "@nodegui/nodegui";
+import { QGridLayout, QMainWindow, QWidget, WindowState } from "@nodegui/nodegui";
+import { QEvent } from "@nodegui/nodegui/dist/lib/QtGui/QEvent/QEvent";
 import { win } from "@ui";
 
 export abstract class View {

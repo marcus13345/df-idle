@@ -7,13 +7,14 @@ import {
 } from './Constants.js';
 import { spawn, ChildProcess } from 'child_process';
 import watch from 'watch';
+import chokidar from 'chokidar';
 import chalk from 'chalk';
 
-ipc.config.silent = true;
+// ipc.config.silent = true;
 
-const exec = 'yarn' + (process.platform === "win32" ? '.cmd' : '');
+const exec = 'qode' + (process.platform === "win32" ? '.cmd' : '');
 const args = [
-  'start'
+  'bin/app.bundle.cjs'
 ]
 
 ipc.serve(IPC_PATH, () => {
@@ -25,15 +26,14 @@ ipc.serve(IPC_PATH, () => {
   ipc.server.on(IPC_RESTART_EVENT, restart)
 });
 
+console.log('started ipc tower server!')
 ipc.server.start();
 
 let proc: ChildProcess = null;
 
 function startProcess() {
   proc = spawn(exec, args, {
-    stdio: 'inherit',
-    cwd: process.cwd(),
-    env: process.env
+    stdio: 'inherit'
   });
   console.log(`[${proc.pid}] ${chalk.grey(`${exec} ${args.join(' ')}`)}`);
   proc.on('exit', () => {
@@ -46,23 +46,22 @@ async function killProcess() {
   if(proc) {
     console.log('killing process...');
     const killedPromise = new Promise((res) => {
-      proc.on('exit', () => {
-        res(void 0);
+      proc.on('exit', (code, sig) => {
+        res(code || sig);
       })
     })
     proc.kill();
-    await killedPromise;
+    console.log('process died with code', await killedPromise);
     proc = null;
+    console.log()
   }
 }
 
 async function restart() {
-  if(proc) {
-    await killProcess();
-    startProcess();
-  } else {
-    startProcess();
-  }
+  console.log('received restart event');
+  await killProcess();
+  console.log('')
+  startProcess();
 }
 
 startProcess();
@@ -70,14 +69,20 @@ startProcess();
 let restartTimer: NodeJS.Timeout = null;
 
 function fileChange() {
-  console.log('changes detected');
   // appendFileSync('log.log', evt + ' ' + path + '\n');
   // console.log(cluster.isMaster, evt, path);
   if(restartTimer) clearTimeout(restartTimer)
   restartTimer = setTimeout(() => {
-    ipc.server.broadcast(IPC_REQUEST_RESTART);
+    console.log('changes detected');
+    if(proc) {
+      ipc.server.broadcast(IPC_REQUEST_RESTART);
+    } else {
+      startProcess();
+    }
     restartTimer = null;
-  }, 1000);
+  }, 100);
 }
-// chokidar.watch('./out').on('all', fileChange);
-watch.watchTree('./bin', fileChange);
+chokidar.watch('./out').on('all', fileChange);
+// watch.watchTree('./bin', fileChange);
+
+

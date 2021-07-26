@@ -1,4 +1,4 @@
-import { Frigid, Serializable } from 'frigid';
+import { Frigid } from 'frigid';
 import { Pawn } from './Pawn.js';
 import { TaskList } from './TaskList.js';
 import { Inventory } from './Inventory.js';

@@ -1,8 +1,12 @@
-import { QGridLayout, QLabel, QMainWindow, QPushButton, QWidget } from "@nodegui/nodegui";
+import { FocusReason, QGridLayout, QLabel, QMainWindow, QPushButton, QWidget } from "@nodegui/nodegui";
 import { ProcessManager } from "../ProcessManager";
 
 export class RequestReloadPopup {
+  static exists = false;
+
   static show() {
+    if(this.exists) return;
+    this.exists = true;
     const window = new QMainWindow();
     window.setFixedSize(200, 100);
     const root = new QWidget();
@@ -16,6 +20,7 @@ export class RequestReloadPopup {
     reloadButton.setText('Reload');
     layout.addWidget(reloadButton, 4, 2, 1, 1);
     window.show();
+    window.setWindowTitle('Reload?');
 
     reloadButton.addEventListener('clicked', () => {
       ProcessManager.restart();
@@ -23,4 +28,4 @@ export class RequestReloadPopup {
   }
 }
 
-//
+//////

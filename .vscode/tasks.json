@@ -23,12 +23,36 @@
       "problemMatcher": {
         "base": "$tsc-watch",
         "applyTo": "allDocuments"
-      }
+      },
+      "dependsOn": [
+        "install deps"
+      ]
     },
     {
       "label": "dev",
       "type": "npm",
       "script": "dev",
+      "isBackground": true,
+      "group": "build",
+      "runOptions": {
+        "runOn": "folderOpen"
+      },
+      "presentation": {
+        "reveal": "never",
+        "echo": false,
+        "focus": false,
+        "panel": "shared",
+        "group": "main"
+      },
+      "problemMatcher": [],
+      "dependsOn": [
+        "install deps"
+      ]
+    },
+    {
+      "label": "install deps",
+      "type": "npm",
+      "script": "install",
       "isBackground": true,
       "group": "build",
       "runOptions": {
@@ -59,7 +83,10 @@
         "panel": "shared",
         "group": "main"
       },
-      "problemMatcher": []
+      "problemMatcher": [],
+      "dependsOn": [
+        "install deps"
+      ]
     }
   ]
 }

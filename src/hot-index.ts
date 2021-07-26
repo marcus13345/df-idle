@@ -11,7 +11,7 @@ import chalk from 'chalk';
 
 ipc.config.silent = true;
 
-const exec = 'yarn';
+const exec = 'yarn' + (process.platform === "win32" ? '.cmd' : '');
 const args = [
   'start'
 ]
@@ -31,7 +31,9 @@ let proc: ChildProcess = null;
 
 function startProcess() {
   proc = spawn(exec, args, {
-    stdio: 'inherit'
+    stdio: 'inherit',
+    cwd: process.cwd(),
+    env: process.env
   });
   console.log(`[${proc.pid}] ${chalk.grey(`${exec} ${args.join(' ')}`)}`);
   proc.on('exit', () => {
@@ -55,8 +57,12 @@ async function killProcess() {
 }
 
 async function restart() {
-  await killProcess();
-  startProcess();
+  if(proc) {
+    await killProcess();
+    startProcess();
+  } else {
+    startProcess();
+  }
 }
 
 startProcess();

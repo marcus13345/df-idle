@@ -3,8 +3,14 @@ import {
   QLabel,
   QTabWidget,
   QWidget,
-  QIcon
+  QIcon,
+  FlexLayout,
+  QGridLayout,
+  FocusPolicy,
+  WidgetEventTypes,
+  AlignmentFlag
 } from '@nodegui/nodegui';
+import { Pawn } from '../Pawn.js';
 import { View } from './View.js';
 
 // 40x30
@@ -40,8 +46,8 @@ export class GameView extends View {
     const page2 = new QLabel();
     page2.setText('Page 2');
 
-    this.right.addTab(page1, new QIcon(), "Page 1");
-    this.right.addTab(page2, new QIcon(), "Page 2");
+    this.right.addTab(new PawnPageWidget(), new QIcon(), 'Pawns');
+    this.right.addTab(page2, new QIcon(), 'Inventory');
   }
 
   constructor(game: Game) {
@@ -50,3 +56,40 @@ export class GameView extends View {
   }
 }
 
+class PawnWidget extends QWidget {
+  constructor(pawn: Pawn) {
+    super();
+    this.setLayout(new QGridLayout());
+    this.setInlineStyle(`
+      height: 64px;
+      background: cyan;
+      width: \'100%\';
+      margin-bottom: 4px;
+    `);
+    const nameLabel = new QLabel();
+    nameLabel.setText(pawn.name.first + ' ' + pawn.name.last);
+    nameLabel.setAlignment(AlignmentFlag.AlignLeft | AlignmentFlag.AlignTop);
+    const activityLabel = new QLabel();
+    activityLabel.setText(pawn.status);
+    activityLabel.setAlignment(AlignmentFlag.AlignRight | AlignmentFlag.AlignTop);
+    this.layout.addWidget(nameLabel, 0, 0, 1, 1);
+    this.layout.addWidget(activityLabel, 0, 1, 1, 1);
+    this.setFocusPolicy(FocusPolicy.ClickFocus);
+  }
+}
+
+class PawnPageWidget extends QWidget {
+  
+  constructor() {
+    super();
+    this.setLayout(new FlexLayout());
+    // this.setInlineStyle('width: 100%; height: 100%;');
+
+    for(const pawn of Game.current.pawns) {
+      // const label = new QLabel();
+      // label.setText(pawn.name.first);
+      // this.layout.addWidget(label);
+      this.layout.addWidget(new PawnWidget(pawn));
+    }
+  }
+}

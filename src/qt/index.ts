@@ -13,37 +13,8 @@ export const win = new QMainWindow();
 win.setFixedSize(800, 600);
 win.setWindowTitle(APPLICATION_NAME);
 // win.setStyleSheet(`
-//   #root {
-//     background-color: black;
-//     height: '100%';
-//   }
-//   QPushButton {
-//     background: #333333;
-//   }
-//   QPushButton:pressed {
-//     background: cyan;
-//     color: black;
-//   }
-//   * {
-//     font-family: 'MxPlus IBM VGA 8x16';
-//     font-size: 16px;
-//   }
-//   QTabWidget {
-//     border: 1px solid white;
-//   }
-//   QTabWidget::pane {
-//     background: black;
-//     border: none;
-//     border-radius: 0px;
-//   } 
-//   QTabBar::tab {
-//     background: black;
-//     color: cyan;
-//     padding: 4px 12px;
-//   } 
-//   QTabBar::tab:selected { 
-//     background: cyan;
-//     color: black;
+//   QTabWidget::tab {
+//     bottom: 2px;
 //   }
 // `);
 win.show();

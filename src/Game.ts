@@ -61,8 +61,11 @@ export class Game extends Frigid implements Tickable {
     this.inventory ??= new Inventory();
     this.inventory.validate();
     this.clock ??= new Time();
-    this.clock.thing = this;
-    this.clock.start();
+    this.clock.start(this);
+    this.pawns = [];
+    if(this.pawns.length === 0) {
+      for(let i = 0; i < 3; i ++) this.pawns.push(new Pawn());
+    }
     ready(this.name);
   }
 

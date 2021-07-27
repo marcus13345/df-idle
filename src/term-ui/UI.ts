@@ -122,6 +122,7 @@ export function start() {
 export function stop() {
   screen.destroy();
   // process.stdout.write('\x1b[?1049l');
+  process.stdout.write(ansi.cursor.show);
 }
 
 // move to some debugging shit, idk

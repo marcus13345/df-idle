@@ -16,25 +16,25 @@ import ansi from 'sisteransi';
 import './../content/content.js';
 import { loadExtensions } from './Util.js';
 import { APPLICATION_NAME } from './Constants.js';
+import chalk from 'chalk';
+import { ProcessManager } from './ProcessManager.js';
 
 // console.clear();
 
-function gracefulShutdown() {
-  if (isStarted()) {
-    stop();
-  }
-  console.log('shutting down gracefully...');
-  if (Game.current) {
-    console.log('saving world...');
-    Game.current.sync();
-  }
-  console.log('exitting');
-  process.stdout.write(ansi.cursor.show);
+ProcessManager.on('shutdown', gracefulShutdown);
 
-  process.exit(0);
+function gracefulShutdown() {
+  // if (isStarted()) {
+  //   stop();
+  // }
+  if (Game.current) {
+    console.log(chalk.cyan('Saving world...'));
+    Game.current.sync();
+    console.log(chalk.cyan('World Saved!'));
+  }
 }
 
-process.on('exit', gracefulShutdown);
+// process.on('exit', gracefulShutdown);
 
 const saveFile = process.argv[2] || 'data/world01.json';
 
@@ -42,10 +42,11 @@ ensureDirSync(parse(saveFile).dir);
 
 // loadExtensions();
 
-for (let seconds = 0; seconds > 0; seconds --) {
-  process.stdout.write('Starting ' + APPLICATION_NAME + ' in ' + seconds + '\r');
-}
-process.stdout.write('Starting ' + APPLICATION_NAME + ' in ' + 0 + '\n');
+// TODO replace with splash screen
+// for (let seconds = 0; seconds > 0; seconds --) {
+//   process.stdout.write('Starting ' + APPLICATION_NAME + ' in ' + seconds + '\r');
+// }
+// process.stdout.write('Starting ' + APPLICATION_NAME + ' in ' + 0 + '\n');
 // console.clear();
 
 // TODO move render logic into game, so that the ui doesnt exist until the game does...

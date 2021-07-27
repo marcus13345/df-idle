@@ -6,83 +6,85 @@ import {
   IPC_REQUEST_RESTART
 } from './Constants.js';
 import { spawn, ChildProcess } from 'child_process';
-import watch from 'watch';
 import chokidar from 'chokidar';
 import chalk from 'chalk';
+ipc.config.silent = true;
 
-// ipc.config.silent = true;
 
-const exec = 'qode' + (process.platform === "win32" ? '.cmd' : '');
+// should be obtained from process spawn args, but whatever!
+const exec = 'qode' +
+  (process.platform === "win32" ? '.cmd' : '');
 const args = [
   'bin/app.bundle.cjs'
-]
+];
 
-ipc.serve(IPC_PATH, () => {
-  ipc.server.on(IPC_QUIT_EVENT, async () => {
-    await killProcess();
-    ipc.server.stop();
-    process.exit(0);
-  });
-  ipc.server.on(IPC_RESTART_EVENT, restart)
-});
+const log = console.log.bind(console, chalk.green('[TOWER]'));
 
-console.log('started ipc tower server!')
-ipc.server.start();
-
+// varying state data
+let connected = 0;
 let proc: ChildProcess = null;
+let restartTimer: NodeJS.Timeout = null;
 
-function startProcess() {
+function ensureAlive() {
+  if(proc) {
+    return;
+  }
+
   proc = spawn(exec, args, {
     stdio: 'inherit'
   });
-  console.log(`[${proc.pid}] ${chalk.grey(`${exec} ${args.join(' ')}`)}`);
-  proc.on('exit', () => {
-    console.log('process died');
+  proc.once('exit', () => {
     proc = null;
-  })
+  });
+  log(`[${
+    proc.pid
+  }] ${
+    chalk.grey(`${
+      exec
+    } ${
+      args.join(' ')
+    }`)
+  }`);
 }
 
-async function killProcess() {
-  if(proc) {
-    console.log('killing process...');
-    const killedPromise = new Promise((res) => {
-      proc.on('exit', (code, sig) => {
-        res(code || sig);
-      })
-    })
-    proc.kill();
-    console.log('process died with code', await killedPromise);
-    proc = null;
-    console.log()
+async function ensureDead() {
+  if(!proc) {
+    return;
   }
+  const killedPromise =
+    new Promise(res => proc.once('exit', res));
+  proc.kill(9);
+  await killedPromise;
+  proc = null;
 }
 
 async function restart() {
-  console.log('received restart event');
-  await killProcess();
-  console.log('')
-  startProcess();
+  await ensureDead();
+  ensureAlive();
 }
 
-startProcess();
-
-let restartTimer: NodeJS.Timeout = null;
-
 function fileChange() {
-  // appendFileSync('log.log', evt + ' ' + path + '\n');
-  // console.log(cluster.isMaster, evt, path);
   if(restartTimer) clearTimeout(restartTimer)
   restartTimer = setTimeout(() => {
-    console.log('changes detected');
-    if(proc) {
-      ipc.server.broadcast(IPC_REQUEST_RESTART);
-    } else {
-      startProcess();
-    }
+    ensureAlive();
+    ipc.server.broadcast(IPC_REQUEST_RESTART);
     restartTimer = null;
   }, 100);
 }
-chokidar.watch('./out').on('all', fileChange);
-// watch.watchTree('./bin', fileChange);
 
+// start the server, connect events
+ipc.serve(IPC_PATH, () => {
+  ipc.server.on(IPC_QUIT_EVENT, ensureDead);
+  ipc.server.on(IPC_RESTART_EVENT, restart);
+  ipc.server.on('connect', () => connected ++);
+  ipc.server.on('disconnect', () => connected --);
+});
+ipc.server.start();
 
+// open the process
+ensureAlive();
+
+//begin watching for files, ignore changes on boot.
+chokidar.watch('./out', {
+  ignoreInitial: true
+}).on('all', fileChange);

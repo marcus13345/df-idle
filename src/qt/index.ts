@@ -20,10 +20,14 @@ win.setWindowTitle(APPLICATION_NAME);
 win.show();
 (global as any).win = win;
 win.addEventListener(WidgetEventTypes.Paint, _ => _);
-win.addEventListener('customContextMenuRequested', console.log)
-win.addEventListener('objectNameChanged', console.log)
-win.addEventListener('windowIconChanged', console.log)
-win.addEventListener('windowTitleChanged', console.log)
+win.addEventListener('customContextMenuRequested', console.log);
+win.addEventListener('objectNameChanged', console.log);
+win.addEventListener('windowIconChanged', console.log);
+win.addEventListener('windowTitleChanged', console.log);
+win.addEventListener(
+  WidgetEventTypes.Close,
+  () => ProcessManager.quit()
+);
 
 setView(new LoadingView());
 
@@ -54,7 +58,6 @@ export function isStarted() {
 
 ProcessManager.on('reload', () => {
   RequestReloadPopup.show();
-  //
 });
 
 
@@ -62,6 +65,6 @@ ProcessManager.on('reload', () => {
 function f() {
   win.repaint();
   win.update();
-  setTimeout(f, 100);
+  setTimeout(f, 0);
 }
 f();

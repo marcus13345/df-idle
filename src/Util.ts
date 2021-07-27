@@ -3,6 +3,8 @@ import { parse, resolve } from 'path';
 import walkSync from 'walk-sync';
 import { fileURLToPath } from 'url';
 import { APPLICATION_NAME } from './Constants.js';
+import chalk from 'chalk';
+
 
 export function osrsNumber(x: number): string {
   if(x < 10_000) return '' + x;
@@ -11,7 +13,7 @@ export function osrsNumber(x: number): string {
 }
 
 export async function loadExtensions() {
-  console.log(APPLICATION_NAME + ': Loading extensions');
+  console.log('Loading extensions');
   const extensionsPath = resolve(parse(fileURLToPath(import.meta.url)).dir, '../content');
 
   const extensions = walkSync(extensionsPath)
@@ -29,5 +31,3 @@ export async function loadExtensions() {
 
   console.log('Setup Complete.');
 }
-
-// export function

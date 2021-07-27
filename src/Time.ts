@@ -18,8 +18,9 @@ const months: AbbreviatedMonthName[] = [
   'Oct', 'Nov', 'Dec'
 ]
 
+// TODO split ticker util and calendar util...
 export default class Time extends Serializable {
-  rate: number;
+  targetTPS: number;
   paused = true;
 
   thing: Tickable;
@@ -29,6 +30,12 @@ export default class Time extends Serializable {
   day: number;
   hour: number;
   minute: number;
+
+  ticksInSecond: number;
+  lastTPSCheckpoint: number;
+  tps: number;
+
+  _boundTick: Function;
 
   constructor(timestamp: number = 0) {
     super();
@@ -67,16 +74,34 @@ export default class Time extends Serializable {
   }
 
   toString() {
-    return `${this.hour}:${Math.floor(this.minute).toString().padStart(2, '0')} ${months[this.month]} ${this.day + 1}, ${this.normalizedYear}`
+    return `${
+      this.hour
+    }:${
+      Math.floor(this.minute).toString().padStart(2, '0')
+    } ${
+      months[this.month]
+    } ${
+      this.day + 1
+    }, ${
+      this.normalizedYear
+    } [${
+      this.tps
+    } / ${
+      this.targetTPS
+    }]`;
   }
 
   ctor() {
-    this.rate = 60;
+    this.targetTPS = 2000;
     this.minute ??= 0;
     this.hour ??= 0;
     this.day ??= 0;
     this.month ??= 0;
     this.year ??= 0;
+    this.tps ??= 0;
+    this.lastTPSCheckpoint = ms4();
+    this.ticksInSecond = 0;
+    this._boundTick = this.doTick.bind(this);
   }
 
   get second() {
@@ -112,7 +137,13 @@ export default class Time extends Serializable {
     this.paused = true;
   }
 
-  start() {
+  resume() {
+    this.paused = false;
+    setTimeout(this.doTick.bind(this), 0);
+  }
+
+  start(tickable: Tickable) {
+    this.thing = tickable;
     this.paused = false;
     setTimeout(this.doTick.bind(this), 0);
   }
@@ -129,8 +160,6 @@ export default class Time extends Serializable {
       return Math.abs(this.year).toString().padStart(4, '0') + ' BCE';
     }
   }
-
-
 
   normalize() {
     // while(t)
@@ -173,20 +202,46 @@ export default class Time extends Serializable {
   }
 
   async doTick() {
+    
     this.advanceTime(1);
-    const timeout = 1000 / this.rate;
-    const start = new Date().getTime();
+    const timeout = 1000 / this.targetTPS;
+    // const start = ms4()
+    const start = ms4();
     if(this.thing) {
       await this.thing.tick();
     }
-    const elapsed = new Date().getTime() - start;
-    const wait = Math.max(timeout - elapsed, 0);
+    const end = ms4()
+    const elapsed = end - start;
+    const wait = timeout - elapsed;
+    const normalizedWait = Math.floor(Math.max(wait, 0));
+
+    // process.stdout.write(`tick took ${elapsed} waiting ${normalizedWait}\n`);
+
+    if(wait < 0) {
+      const ticksOver = (-wait / timeout) + 1;
+      console.log(chalk.yellow('Can\'t keep up! Tick took ' + ticksOver.toFixed(2) + ' ticks (' + (timeout - wait).toFixed(4) + 'ms)'));
+    }
+    
+    
+    this.ticksInSecond ++;
+
+    if(end > this.lastTPSCheckpoint + 1000) {
+      this.lastTPSCheckpoint = end;
+      this.tps = this.ticksInSecond;
+      this.ticksInSecond = 0;
+    }
+
     if(this.paused) return;
-    setTimeout(this.doTick.bind(this), wait)
+    setTimeout(this._boundTick, normalizedWait)
+    
   }
 }
 
-
 export interface Tickable {
   tick: () => Promise<void>
+}
+
+function ms4() {
+  const a = process.hrtime()
+  return a[0]*10e2 + a[1]/1000000;
 }

@@ -80,7 +80,7 @@ let currentTheme = backupTheme;
 const themes: Map<ThemeName, Theme> = new Map();
 
 export function registerTheme(name: ThemeName, theme: Partial<Theme>) {
-  console.log('Registered theme', name);
+  // console.log('Registered theme', name);
   themes.set(name, merge(backupTheme, theme));
 }
 

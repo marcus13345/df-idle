@@ -36,7 +36,7 @@ export class Item<Data = any> {
 
   register(force = true) {
     if((!this.id || !this.name) && !force) return;
-    console.log('Added item', (this.name.singular ?? "[No Name]").padStart(20, ' '), `| (${this.id})`)
+    // console.log('Added item', (this.name.singular ?? "[No Name]").padStart(20, ' '), `| (${this.id})`)
     items.set(this.id, this);
     return this;
   }
@@ -61,6 +61,10 @@ export class ItemState<Data> extends Serializable {
     if(this.qty < qty) throw new Error('cant split more than stack from stack...');
     this.qty -= qty;
     return new ItemState<Data>(this.item, qty, this.data);
+  }
+
+  get name() {
+    return this.qty === 1 ? this.item.name.singular : this.item.name.plural;
   }
 
   get item() {

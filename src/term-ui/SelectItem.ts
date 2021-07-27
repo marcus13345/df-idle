@@ -33,7 +33,7 @@ export class SelectItem {
   }
 
   private close() {
-    Game.current.clock.start();
+    Game.current.clock.resume();
     panels.screen.remove(this.box);
   }
 

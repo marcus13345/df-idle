@@ -40,7 +40,7 @@ export class EscapeMenu {
       } else if (key.full === 'enter') {
         switch(this.selected) {
           case 0: {
-            Game.current.clock.start();
+            Game.current.clock.resume();
             panels.screen.remove(this.box);
             break;
           }
@@ -54,7 +54,7 @@ export class EscapeMenu {
           }
         }
       } else if(key.full === 'escape') {
-        Game.current.clock.start();
+        Game.current.clock.resume();
         panels.screen.remove(this.box);
       }
       this.render();

@@ -5,7 +5,7 @@ import * as uuid from 'uuid';
 import faker from 'faker';
 import chalk from 'chalk';
 import { Item } from '../registries/Items.js';
-import WebSocket from 'ws';
+import WebSocket, { EventEmitter } from 'ws';
 import { Popup } from '@ui';
 import { inspect } from 'util'
 import { Pawn } from '../Pawn.js';
@@ -18,11 +18,11 @@ const mdns = bonjour();
 const ID = uuid.v4();
 let devices: Player[] = [];
 
-const network = {
+const network = new (class Network extends EventEmitter {
   get players() {
     return devices;
   }
-}
+})();
 
 export type GiftMessage = {
   pawns: string[],
@@ -61,11 +61,13 @@ export async function ready(name: string) {
 mdns.find({
   type: MDNS_TYPE
 }, (service) => {
+  network.emit('change');
   const p = new Player();
   p.name = service.name;
   p.host = service.host;
   p.port = service.port;
   devices.push(p);
 }).on("down", (service) => {
+  network.emit('change');
   // TODO remove player from MP
 })

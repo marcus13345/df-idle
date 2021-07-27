@@ -1,21 +1,30 @@
 import { Serializable } from 'frigid';
 import { getTheme } from '@themes';
-import { Renderable } from '../ui/UI.js';
+import { osrsNumber } from '../Util.js';
 
 export type ItemID = string;
 
 const items = new Map<ItemID, Item<any>>();
 
 // ITEMS SHALL BE SINGULAR
-export class Item<Data> extends Serializable {
+export class Item<Data = any> {
 
-  name = '';
+  name = {
+    singular: '',
+    plural: ''
+  }
   id: ItemID = '';
   props: Map<string, any> = new Map();
 
   setName(name: string) {
-    this.name = name;
+    this.name.singular = name;
+    this.name.plural = name;
     this.register(false);
+    return this;
+  }
+
+  plural(name: string) {
+    this.name.plural = name;
     return this;
   }
 
@@ -27,7 +36,7 @@ export class Item<Data> extends Serializable {
 
   register(force = true) {
     if((!this.id || !this.name) && !force) return;
-    console.log('Added item', (this.name ?? "[No Name]").padStart(20, ' '), `| (${this.id})`)
+    // console.log('Added item', (this.name.singular ?? "[No Name]").padStart(20, ' '), `| (${this.id})`)
     items.set(this.id, this);
     return this;
   }
@@ -43,7 +52,7 @@ export class Item<Data> extends Serializable {
   }
 }
 
-export class ItemState<Data> extends Serializable implements Renderable {
+export class ItemState<Data> extends Serializable {
   qty: number;
   itemId: ItemID;
   data: Data;
@@ -54,13 +63,17 @@ export class ItemState<Data> extends Serializable implements Renderable {
     return new ItemState<Data>(this.item, qty, this.data);
   }
 
+  get name() {
+    return this.qty === 1 ? this.item.name.singular : this.item.name.plural;
+  }
+
   get item() {
     if(!items.has(this.itemId))
       throw new Error('unknown item: ' + this.itemId);
     return items.get(this.itemId);
   }
 
-  constructor(item: Item<Data>, amount: number, data: Data) {
+  constructor(item: Item<Data>, amount: number, data: Data = null) {
     super();
     this.qty = amount;
     this.itemId = item.id;
@@ -68,7 +81,10 @@ export class ItemState<Data> extends Serializable implements Renderable {
   }
 
   render() {
-    return getTheme().normal(` ${this.item.name}{|}${this.qty} `);
+    return getTheme().normal(` ${osrsNumber(this.qty)} ${(() => {
+      if(this.qty === 1) return this.item.name.singular;
+      else return this.item.name.plural;
+    })()} `);
   }
 }
 

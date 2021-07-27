@@ -1,54 +1,59 @@
-import { render } from './ui/UI.js';
 import { ensureDirSync } from 'fs-extra';
-import { lstatSync } from 'fs';
-import { parse, resolve } from 'path';
-import walkSync from 'walk-sync';
-import { fileURLToPath } from 'url';
+import { parse } from 'path';
 import { Game } from '@game';
-import { isStarted, stop } from './ui/UI.js';
-import { writeFileSync } from 'fs';
+import {
+  isStarted,
+  stop,
+  update,
+  GameView,
+  setView,
+  start
+} from '@ui';
+// @ts-ignore
+import ansi from 'sisteransi';
 
+// HACK static extension loading
+import './../content/content.js';
+import { loadExtensions } from './Util.js';
+import { APPLICATION_NAME } from './Constants.js';
+import chalk from 'chalk';
+import { ProcessManager } from './ProcessManager.js';
+
+// console.clear();
+
+ProcessManager.on('shutdown', gracefulShutdown);
 
 function gracefulShutdown() {
-  if(isStarted()) {
-    stop();
-  }
-  console.log('shutting down gracefully...');
-  if(Game.current) {
-    console.log('saving world...');
+  // if (isStarted()) {
+  //   stop();
+  // }
+  if (Game.current) {
+    console.log(chalk.cyan('Saving world...'));
     Game.current.sync();
+    console.log(chalk.cyan('World Saved!'));
   }
-  console.log('exitting');
-  process.exit(0);
 }
-process.on('exit', gracefulShutdown);
 
+// process.on('exit', gracefulShutdown);
 
 const saveFile = process.argv[2] || 'data/world01.json';
 
 ensureDirSync(parse(saveFile).dir);
 
+// loadExtensions();
 
-// TODO extract extension loading into separate file
-console.log('df-idle: Loading extensions');
-const extensionsPath = resolve(parse(fileURLToPath(import.meta.url)).dir, '../content');
-
-const extensions = walkSync(extensionsPath)
-  .map(path => resolve(extensionsPath, path))
-  .filter(path => lstatSync(path).isFile())
-  .filter(path => parse(path).ext === '.js');
-  // .map(path => import(path));
-
-console.log('found', extensions.length, 'extensions');
-
-for(const path of extensions) {
-  console.log('=== [', path, '] ===');
-  await import(path);
-  console.log();
-}
+// TODO replace with splash screen
+// for (let seconds = 0; seconds > 0; seconds --) {
+//   process.stdout.write('Starting ' + APPLICATION_NAME + ' in ' + seconds + '\r');
+// }
+// process.stdout.write('Starting ' + APPLICATION_NAME + ' in ' + 0 + '\n');
+// console.clear();
 
 // TODO move render logic into game, so that the ui doesnt exist until the game does...
 // maybe, i mean, an argument could be made for not that, because the game
 // isnt necessarily the entire thing, its just one instance of a save file.
 // But probably the initial menu screens will be their own thing entirely.
 const game = Game.create(saveFile);
+start();
+const gameView = new GameView(game);
+setView(gameView);

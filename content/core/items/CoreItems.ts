@@ -30,6 +30,7 @@ export const LOG = new Item()
 
 export const STICK = new Item()
   .setName("Stick")
+  .plural('Sticks')
   .setId('core:resources/stick')
 
 export const PLANT_FIBRES = new Item()
@@ -56,7 +57,7 @@ export const SANDSTONE_PEBBLE = new Item()
   .setName("Sandstone Pebble")
   .setId('core:sandstone-pebble')
 
-export const SLATE_NORMAL = new Item()
+export const SLATE = new Item()
   .setName("Slate")
   .setId('core:slate')
 

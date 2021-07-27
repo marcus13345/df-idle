@@ -23,7 +23,7 @@ export class PawnDetails {
 		});
 		this.box.on('keypress', (evt: {}, key: {full: string}) => {
 			if(key.full === 'escape' || key.full === 'enter') {
-				Game.current.clock.start();
+				Game.current.clock.resume();
 				panels.screen.remove(this.box);
 			} else if (key.full === 'up') {
 				// this.selected --;

@@ -12,13 +12,15 @@
 			"@actions": ["./src/registries/Actions"],
 			"@tasks": ["./src/registries/Tasks"],
 			"@items": ["./src/registries/Items"],
-			"@ui": ["./src/ui/UI"],
+			"@world": ["./src/World"],
+			"@ui": ["./src/qt/index"],
 			"@game": ["./src/Game"]
 		},
     "noImplicitAny": true
 	},
 	"include": [
 		"src/**/*.ts",
-		"content/**/*.ts"
+		"content/**/*.ts",
+    "ui-engine/**/*.ts"
 	]
 }

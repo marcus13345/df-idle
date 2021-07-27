@@ -3,9 +3,10 @@ import blessed from 'neo-blessed';
 import ansi from 'sisteransi';
 import { boxStyle, getTheme } from '@themes';
 export { Popup } from './Popup.js';
+export { Menu } from './Menu.js'
 
 export interface Renderable {
-	render(): void
+	render(mode?: RenderMode): string
 }
 
 let leftPanel: any;
@@ -29,15 +30,15 @@ export function isStarted() {
 
 export const panels = {
   get left() {
-    assertStarted()
+    assertStarted();
     return leftPanel;
   },
   get right() {
-    assertStarted()
+    assertStarted();
     return rightPanel;
   },
   get screen() {
-    assertStarted()
+    assertStarted();
     return screen;
   }
 }
@@ -58,7 +59,7 @@ export function render(thing?: Renderable) {
 export function start() {
   assertNotStarted();
 
-  process.stdout.write('\x1b[?1049h');
+  // process.stdout.write('\x1b[?1049h');
 
   screen = blessed.screen({
     smartCSR: true,
@@ -99,12 +100,12 @@ export function start() {
   process.stdout.write(ansi.cursor.hide);
 
   // todo make a real menu
-  screen.key(['C-c'], function() {
-    process.stdout.write(ansi.cursor.show);
-    setTimeout(_ => {
-      process.exit(0);
-    })
-  });
+  // screen.key(['C-c'], function() {
+  //   process.stdout.write(ansi.cursor.show);
+  //   setTimeout(_ => {
+  //     process.exit(0);
+  //   })
+  // });
 
   screen.key('f2', () => {
     rightPanel.focus();
@@ -120,7 +121,8 @@ export function start() {
 
 export function stop() {
   screen.destroy();
-  process.stdout.write('\x1b[?1049l');
+  // process.stdout.write('\x1b[?1049l');
+  process.stdout.write(ansi.cursor.show);
 }
 
 // move to some debugging shit, idk
@@ -145,3 +147,9 @@ ansiTestCard += '{/center}';
 export {
   ansiTestCard
 };
+
+export enum RenderMode {
+  ONELINE,
+  DETAILS,
+  DYNAMIC
+}

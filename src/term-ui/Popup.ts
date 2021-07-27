@@ -11,7 +11,7 @@ export class Popup {
     new Popup(content)
   }
 
-  private constructor(content: string) {
+  protected constructor(content: string) {
     this.box = blessed.box({
       top: 'center',
       left: 'center',
@@ -23,7 +23,7 @@ export class Popup {
     });
     this.box.on('keypress', (evt: {}, key: {full: string}) => {
       if(key.full === 'escape' || key.full === 'enter') {
-        Game.current.clock.start();
+        Game.current.clock.resume();
         panels.screen.remove(this.box);
       }
     });

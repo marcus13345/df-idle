@@ -10,8 +10,8 @@ import PawnsView from './view/PawnsView.js';
 import InventoryView from './view/InventoryView.js';
 import MultiplayerView from './view/MultiplayerView.js';
 import { View } from './View.js';
-import { ActionsView } from './view/ActionsView.js';
-import { tasks } from '@tasks';
+import WorldResourcesView from './view/WorldView.js';
+import { EscapeMenu } from './EscapeMenu.js';
 
 const clamp = (min: number, max: number, value: number) => Math.min(Math.max(value, min), max);
 
@@ -28,7 +28,7 @@ export class Menu implements Renderable {
     new PawnsView(),
     new InventoryView(),
     new MultiplayerView(),
-    new ActionsView()
+    new WorldResourcesView()
   ]
 
   get view() {
@@ -53,14 +53,12 @@ export class Menu implements Renderable {
       } else if (key.full === 'right') {
         this.advanceView();
       } else if (key.full === 'escape') {
-        this.advanceView();
+        EscapeMenu.show();
       
       // debugging hotkeys
       } else if (key.full === '1') {
         Popup.show(inspect(stats));
       } else if (key.full === '2') {
-        Popup.show(inspect(tasks));
-      } else if (key.full === '3') {
         Popup.show(inspect(stats));
       } else if (key.full === 'z') {
         Game.current.pawns.push(new Pawn());
@@ -114,5 +112,6 @@ export class Menu implements Renderable {
       this.renderView(),
     ].join('\n');
     panels.right.setContent(content);
+    return '';
   }
 }

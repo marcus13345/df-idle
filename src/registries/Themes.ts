@@ -54,7 +54,7 @@ export const backupTheme: Theme = {
     selected: chalk.ansi256(117).inverse
   },
   border: {
-    focused: '#ffffff',
+    focused: '#00ff00',
     normal: '#888888'
   },
   progressBar: {
@@ -80,7 +80,7 @@ let currentTheme = backupTheme;
 const themes: Map<ThemeName, Theme> = new Map();
 
 export function registerTheme(name: ThemeName, theme: Partial<Theme>) {
-  console.log('Registered theme', name);
+  // console.log('Registered theme', name);
   themes.set(name, merge(backupTheme, theme));
 }
 

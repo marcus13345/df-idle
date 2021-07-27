@@ -1,26 +1,23 @@
-import { Frigid, Serializable } from 'frigid';
-import { DEBUG } from 'frigid/out/Serializable.js';
+import { Frigid } from 'frigid';
 import { Pawn } from './Pawn.js';
 import { TaskList } from './TaskList.js';
 import { Inventory } from './Inventory.js';
-import { Menu } from './ui/Menu.js';
 import Time, { Tickable } from './Time.js';
-import { render, Renderable, setTitle, start } from './ui/UI.js';
+import { setTitle, start, update } from '@ui';
 import { ready } from './multiplayer/mDNS.js';
 import faker from 'faker';
+import { World } from '@world';
 
 let game: Game = null;
 
-export class Game extends Frigid implements Tickable, Renderable {
+export class Game extends Frigid implements Tickable {
   pawns: Pawn[] = [];
   selected: Pawn;
   inventory: Inventory;
   board: TaskList;
-  menu: Menu;
   clock: Time;
   name: string;
-
-  [DEBUG] = true;
+  world: World;
 
   static get current(): Game {
     if (!game) throw new Error('Somehow called a game before it existed?');
@@ -31,7 +28,7 @@ export class Game extends Frigid implements Tickable, Renderable {
     for(const pawn of this.pawns) {
       pawn.tick();
     }
-    render();
+    update();
   }
 
   get inv() { return this.inventory; }
@@ -57,25 +54,22 @@ export class Game extends Frigid implements Tickable, Renderable {
     start();
     this.name ??= faker.address.city();
     setTitle(this.name);
+    this.world ??= new World();
     this.pawns ??= [];
     this.selected ??= this.pawns[0] || null;
-    this.menu = new Menu();
     this.board ??= new TaskList();
     this.inventory ??= new Inventory();
     this.inventory.validate();
     this.clock ??= new Time();
-    this.clock.thing = this;
-    this.clock.start();
+    this.clock.start(this);
+    this.pawns = [];
+    if(this.pawns.length === 0) {
+      for(let i = 0; i < 3; i ++) this.pawns.push(new Pawn());
+    }
     ready(this.name);
-    render(this);
   }
 
   static serializationDependencies() {
-    return [ Pawn, Inventory, TaskList, Time ];
-  }
-
-  render() {
-    this.menu.render();
-    this.board.render();
+    return [ Pawn, Inventory, TaskList, Time, World ];
   }
 }

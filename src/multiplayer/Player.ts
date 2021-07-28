@@ -10,6 +10,11 @@ export class Player {
 	host: string;
 	port: number;
 
+  equals(player: Player) {
+    return this.host === player.host
+        && this.port === player.port;
+  }
+
 	toString() {
 		return this.name;
 	}

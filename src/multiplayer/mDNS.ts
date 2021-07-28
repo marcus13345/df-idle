@@ -13,6 +13,7 @@ import { Game } from '../Game.js';
 import { Player } from './Player.js';
 import { injectTravelMemory } from '../Memories.js';
 import { MDNS_TYPE } from '../Constants.js';
+import { ProcessManager } from '../ProcessManager.js';
 
 const mdns = bonjour();
 const ID = uuid.v4();
@@ -61,13 +62,30 @@ export async function ready(name: string) {
 mdns.find({
   type: MDNS_TYPE
 }, (service) => {
-  network.emit('change');
   const p = new Player();
   p.name = service.name;
   p.host = service.host;
   p.port = service.port;
+  // console.log('')
   devices.push(p);
+  network.emit('change');
 }).on("down", (service) => {
+  const p = new Player();
+  p.name = service.name;
+  p.host = service.host;
+  p.port = service.port;
+  devices = devices.filter((player: Player) => {
+    return !player.equals(p);
+  });
   network.emit('change');
   // TODO remove player from MP
-})
+});
+
+
+ProcessManager.on('shutdown', () => {
+  ProcessManager.processLock = ProcessManager.processLock.then(() => new Promise(res => {
+    mdns.unpublishAll(() => {
+      res(void 0);
+    });
+  }));
+});

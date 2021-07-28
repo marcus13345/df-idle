@@ -18,9 +18,16 @@ const restoreLog = () => console.log = oldConsoleLog;
 // const log = (...args: any[]) => console.log(chalk.cyan('[CLIENT]'), ...args);
 
 class ProcessManagerClass extends EventEmitter {
+
+  processLock = Promise.resolve();
+  // TODO replace this with an async sortof
+  // event emitter, to wait for all clean up
+
   quit() {
     this.emit('shutdown');
-    process.exit(0);
+    this.processLock.then(() => {
+      process.exit(0);
+    })
   }
 
   restart() {
@@ -63,5 +70,19 @@ ipc.connectTo(name, () => {
 process.on('SIGKILL', () => ProcessManager.quit());
 process.on('SIGTERM', () => ProcessManager.quit());
 process.on('SIGINT', () => ProcessManager.quit());
+// process.on('exit', () => ProcessManager.quit());
+process.on('beforeExit', () => ProcessManager.quit());
 
+// dumbass hack hahahah :)
+if (process.platform === "win32") {
+  var rl = require("readline").createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  rl.on("SIGINT", function () {
+    // @ts-ignore dont know why, dont fuckin care
+    process.emit("SIGINT");
+  });
+}
 ///

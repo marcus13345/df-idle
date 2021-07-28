@@ -128,6 +128,8 @@ abstract class ScrollPanel extends QScrollArea {
   centralWidget: QWidget;
   vLayout: QBoxLayout;
 
+  widgets: QWidget[] = [];
+
   constructor() {
     super();
     this.setInlineStyle(`
@@ -147,23 +149,22 @@ abstract class ScrollPanel extends QScrollArea {
     this.fill();
 
     this.vLayout.addStretch(1);
-
-    // for(let i = 0; i < 100; i ++) {
-    //   const button = new QPushButton();
-    //   button.setText('' + i);
-    //   this.vLayout.addWidget(button);
-    // }
   }
 
   refill() {
-    for(const a of this.nodeChildren) {
-      console.log(a);
+    for(const component of this.widgets) {
+      // component.hide();
+      component.close();
+      // component.nodeParent = null;
+      // this.vLayout.removeWidget(component);
     }
+    this.widgets = [];
     this.fill();
   }
 
   addWidget(widget: QWidget) {
-    this.vLayout.addWidget(widget);
+    this.widgets.push(widget);
+    this.vLayout.insertWidget(0, widget);
   }
 
   abstract fill(): void;

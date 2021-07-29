@@ -61,13 +61,11 @@ ipc.connectTo(name, () => {
     restoreLog();
   });
   ipc.of[name].on(IPC_REQUEST_RESTART, () => {
-    console.log('received restart request');
-    // ProcessManager.restart();
     ProcessManager.emit('reload');
   })
 });
 
-process.on('SIGKILL', () => ProcessManager.quit());
+// process.on('SIGKILL', () => ProcessManager.quit());
 process.on('SIGTERM', () => ProcessManager.quit());
 process.on('SIGINT', () => ProcessManager.quit());
 // process.on('exit', () => ProcessManager.quit());

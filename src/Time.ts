@@ -92,7 +92,7 @@ export default class Time extends Serializable {
   }
 
   ctor() {
-    this.targetTPS = 2000;
+    this.targetTPS = 60;
     this.minute ??= 0;
     this.hour ??= 0;
     this.day ??= 0;
@@ -203,7 +203,7 @@ export default class Time extends Serializable {
 
   async doTick() {
     
-    this.advanceTime(1);
+    this.advanceTime(3);
     const timeout = 1000 / this.targetTPS;
     // const start = ms4()
     const start = ms4();
@@ -219,7 +219,8 @@ export default class Time extends Serializable {
 
     if(wait < 0) {
       const ticksOver = (-wait / timeout) + 1;
-      console.log(chalk.yellow('Can\'t keep up! Tick took ' + ticksOver.toFixed(2) + ' ticks (' + (timeout - wait).toFixed(4) + 'ms)'));
+      if(ticksOver > 1.5)
+        console.log(chalk.yellow('Can\'t keep up! Tick took ' + ticksOver.toFixed(2) + ' ticks (' + (timeout - wait).toFixed(4) + 'ms)'));
     }
     
     

@@ -13,8 +13,9 @@ export const win = new QMainWindow();
 win.setFixedSize(800, 600);
 win.setWindowTitle(APPLICATION_NAME);
 // win.setStyleSheet(`
-//   QTabWidget::tab {
-//     bottom: 2px;
+//   * {
+//     margin: 0px;
+//     padding: 0px;
 //   }
 // `);
 win.show();

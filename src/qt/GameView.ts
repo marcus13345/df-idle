@@ -11,6 +11,11 @@ import {
   QBoxLayout,
   Direction,
   QScrollArea,
+  WidgetEventTypes,
+  QPaintEvent,
+  QPainter,
+  QFrame,
+  QPushButton
 } from '@nodegui/nodegui';
 import network from '../multiplayer/mDNS.js';
 import { Player } from '../multiplayer/Player.js';
@@ -23,6 +28,7 @@ export class GameView extends View {
   timeLabel: QLabel;
   left: QWidget;
   right: QTabWidget;
+  timeControl: TimeControl;
 
   addComponents(): void {
     this.addLayout();
@@ -31,17 +37,20 @@ export class GameView extends View {
     this.left = new QWidget();
     this.right = new QTabWidget();
     this.timeLabel = new TimeWidget();
+    this.timeControl = new TimeControl();
 
     this.title.setText(this.game.name);
 
-    this.layout.addWidget(this.title, 0, 0);
-    this.layout.addWidget(this.timeLabel, 0, 1);
-    this.layout.addWidget(this.left, 1, 0);
-    this.layout.addWidget(this.right, 1, 1);
+    this.layout.addWidget(this.title, 0, 0, 1, 5);
+    this.layout.addWidget(this.timeControl, 0, 5, 1, 5)
+    this.layout.addWidget(this.timeLabel, 0, 10, 1, 5);
+    this.layout.addWidget(this.left, 1, 0, 1, 9);
+    this.layout.addWidget(this.right, 1, 9, 1, 6);
     this.layout.setRowStretch(0, 0);
     this.layout.setRowStretch(1, 1);
-    this.layout.setColumnStretch(0, 3);
-    this.layout.setColumnStretch(1, 2);
+    for(let i = 0; i < 15; i ++) {
+      this.layout.setColumnStretch(i, 1);
+    }
 
     this.right.addTab(new PawnPageWidget(), new QIcon(), 'Pawns');
     this.right.addTab(new InventoryPageWidget(), new QIcon(), 'Inventory');
@@ -54,7 +63,7 @@ export class GameView extends View {
   }
 }
 
-class GridItem extends QWidget {
+class GridItem extends QFrame {
 
   rootLayout: QGridLayout;
 
@@ -68,12 +77,16 @@ class GridItem extends QWidget {
     this.rootLayout = new QGridLayout()
     this.setLayout(this.rootLayout);
     this.setInlineStyle(`
-      width: \'100%\';
-      background: coral;
+      width: '100%';
       margin: 0px;
       padding: 0px;
     `);
-    
+    this.rootLayout.setContentsMargins(0, 0, 0, 0);
+    this.rootLayout.setSpacing(0);
+    this.rootLayout.setVerticalSpacing(0);
+    this.rootLayout.setHorizontalSpacing(0);
+    // this.rootLayout.
+
     this.setFocusPolicy(FocusPolicy.ClickFocus);
   }
 }
@@ -84,9 +97,11 @@ function addSplitText(layout: QGridLayout, left: string, right: string, row: num
   const nameLabel = new QLabel();
   nameLabel.setText(left);
   nameLabel.setAlignment(AlignmentFlag.AlignLeft | AlignmentFlag.AlignTop);
+  // nameLabel.setInlineStyle('padding: 0px; margin: 0px;');
   const activityLabel = new QLabel();
   activityLabel.setText(right);
   activityLabel.setAlignment(AlignmentFlag.AlignRight | AlignmentFlag.AlignTop);
+  // activityLabel.setInlineStyle('padding: 0px; margin: 0px;');
 
   layout.addWidget(nameLabel, row, 0, 1, 1);
   layout.addWidget(activityLabel, row, 1, 1, 1);
@@ -136,14 +151,17 @@ abstract class ScrollPanel extends QScrollArea {
       background: rgba(0, 0, 0, 0);
       border: none;
     `)
-    this.centralWidget = new QWidget();
+    this.centralWidget = new QFrame();
     this.centralWidget.setInlineStyle(`
       background: rgba(0, 0, 0, 0);
-    `)
+    `);
     // this.setVerticalScrollBarPolicy(ScrollBarPolicy.ScrollBarAlwaysOn);
     this.setWidgetResizable(true);
     this.setWidget(this.centralWidget);
     this.vLayout = new QBoxLayout(Direction.TopToBottom);
+    const a = 12;
+    this.vLayout.setContentsMargins(a, a, a, a);
+    this.vLayout.setSpacing(0);
     this.centralWidget.setLayout(this.vLayout);
 
     this.fill();
@@ -246,6 +264,82 @@ class MultiplayerPageWidget extends ScrollPanel {
   fill(): void {
     for(const player of network.players) {
       this.addWidget(new MultiplayerPlayerWidget(player))
+    }
+  }
+}
+
+class TimeControl extends GridItem {
+  pauseButton: QPushButton;
+  normalSpeedButton: QPushButton;
+  turboSpeedButton: QPushButton;
+  extremeSpeedButton: QPushButton;
+  
+  NORMAL = 60;
+  TURBO = 180;
+  EXTREME = 360;
+
+  constructor() {
+    super();
+    
+    this.pauseButton = new QPushButton();
+    this.pauseButton.setText('❚❚');
+
+    this.normalSpeedButton = new QPushButton();
+    this.normalSpeedButton.setText('❯');
+
+    this.turboSpeedButton = new QPushButton();
+    this.turboSpeedButton.setText('❯'.repeat(2));
+
+    this.extremeSpeedButton = new QPushButton();
+    this.extremeSpeedButton.setText('❯'.repeat(3));
+
+    this.layout.addWidget(this.pauseButton, 0, 0);
+    this.layout.addWidget(this.normalSpeedButton, 0, 1);
+    this.layout.addWidget(this.turboSpeedButton, 0, 2);
+    this.layout.addWidget(this.extremeSpeedButton, 0, 3);
+
+    this.updateButtons();
+
+    this.pauseButton.addEventListener('clicked', () => {
+      Game.current.clock.pause();
+      this.updateButtons();
+    });
+
+    this.normalSpeedButton.addEventListener('clicked', () => {
+      if(Game.current.clock.paused) Game.current.clock.resume();
+      Game.current.clock.targetTPS = this.NORMAL;
+      this.updateButtons();
+    });
+
+    this.turboSpeedButton.addEventListener('clicked', () => {
+      if(Game.current.clock.paused) Game.current.clock.resume();
+      Game.current.clock.targetTPS = this.TURBO;
+      this.updateButtons();
+    });
+
+    this.extremeSpeedButton.addEventListener('clicked', () => {
+      if(Game.current.clock.paused) Game.current.clock.resume();
+      Game.current.clock.targetTPS = this.EXTREME;
+      this.updateButtons();
+    });
+  }
+
+  updateButtons() {
+
+    const update = (a: boolean, b: boolean, c: boolean, d: boolean) => {
+      this.pauseButton.setEnabled(a);
+      this.normalSpeedButton.setEnabled(b);
+      this.turboSpeedButton.setEnabled(c);
+      this.extremeSpeedButton.setEnabled(d);
+    }
+
+    if(Game.current) {
+      if(Game.current.clock.paused) return update(false, true, true, true);
+      if(Game.current.clock.targetTPS === this.NORMAL) return update(true, false, true, true);
+      if(Game.current.clock.targetTPS === this.TURBO) return update(true, true, false, true);
+      if(Game.current.clock.targetTPS === this.EXTREME) return update(true, true, true, false);
+    } else {
+      update(false, false, false, false);
     }
   }
 }

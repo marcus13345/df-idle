@@ -20,8 +20,8 @@ export class Pawn extends Serializable implements Tickable {
 
   job: TaskState<unknown, unknown>;
 
-  async tick() {
-    this.age ++;
+  async tick(seconds: number) {
+    this.age += seconds;
   }
 
   get idle() {

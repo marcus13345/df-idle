@@ -15,6 +15,7 @@ ipc.config.silent = true;
 const exec = 'qode' +
   (process.platform === "win32" ? '.cmd' : '');
 const args = [
+  // '--inspect',
   'bin/app.bundle.cjs'
 ];
 

@@ -201,45 +201,112 @@ export default class Time extends Serializable {
     }
   }
 
+  async execTick(seconds: number) {
+    const doDynamicTick = true;
+    
+    if(doDynamicTick) {
+      if(this.thing) {
+        await this.thing.tick(seconds);
+      }
+      this.advanceTime(seconds);
+    } else {
+      for(let i = 0; i < seconds; i ++) {
+        if(this.thing) {
+          await this.thing.tick(1);
+        }
+        this.advanceTime(1);
+      }
+    }
+  }
+
   async doTick() {
+
+    // the higher the multitick, the more lopsided
+    // ticks become in realtime, however, they rely
+    // on fewer setTimeouts, which helps tick scheduling
+    const multitick = 1;
+
+    if(multitick > 1) {
+      const timeout = (1000 / this.targetTPS) * multitick;
+      const start = ms4();
+
+      for(let tickNum = 0; tickNum < multitick; tickNum ++ ) {
+        const seconds = 3;
+
+        this.execTick(seconds);
+
+        this.ticksInSecond ++;
+        const end = ms4();
+        
+        if(end > this.lastTPSCheckpoint + 1000) {
+          this.lastTPSCheckpoint = end;
+          this.tps = this.ticksInSecond;
+          this.ticksInSecond = 0;
+        }
+      }
     
-    this.advanceTime(3);
-    const timeout = 1000 / this.targetTPS;
-    // const start = ms4()
-    const start = ms4();
-    if(this.thing) {
-      await this.thing.tick();
+      const end = ms4()
+      const elapsed = end - start;
+      const wait = timeout - elapsed;
+      const normalizedWait = Math.floor(Math.max(wait, 0));
+  
+      // process.stdout.write(`tick took ${elapsed} waiting ${normalizedWait}\n`);
+  
+      if(wait < 0) {
+        const ticksOver = (-wait / timeout) + 1;
+        if(ticksOver > 1.5)
+          console.log(chalk.yellow('Can\'t keep up! Tick took ' + ticksOver.toFixed(2) + ' ticks (' + (timeout - wait).toFixed(4) + 'ms)'));
+      }
+      
+      
+  
+  
+      if(this.paused) return;
+      setTimeout(this._boundTick, normalizedWait);
+    } else {
+      // this code is from not needing a multi-tick workaround, due to scheduling.
+      const seconds = 3;
+      const timeout = 1000 / this.targetTPS;
+      // const start = ms4()
+      const start = ms4();
+  
+      this.execTick(seconds);
+  
+      const end = ms4()
+      const elapsed = end - start;
+      const wait = timeout - elapsed;
+      const normalizedWait = Math.floor(Math.max(wait, 0));
+  
+      // process.stdout.write(`tick took ${elapsed} waiting ${normalizedWait}\n`);
+  
+      if(wait < 0) {
+        const ticksOver = (-wait / timeout) + 1;
+        if(ticksOver > 1.5)
+          console.log(chalk.yellow('Can\'t keep up! Tick took ' + ticksOver.toFixed(2) + ' ticks (' + (timeout - wait).toFixed(4) + 'ms)'));
+      }
+      
+      
+      this.ticksInSecond ++;
+  
+      if(end > this.lastTPSCheckpoint + 1000) {
+        this.lastTPSCheckpoint = end;
+        this.tps = this.ticksInSecond;
+        this.ticksInSecond = 0;
+      }
+  
+      if(this.paused) return;
+      setTimeout(this._boundTick, normalizedWait);
     }
-    const end = ms4()
-    const elapsed = end - start;
-    const wait = timeout - elapsed;
-    const normalizedWait = Math.floor(Math.max(wait, 0));
 
-    // process.stdout.write(`tick took ${elapsed} waiting ${normalizedWait}\n`);
 
-    if(wait < 0) {
-      const ticksOver = (-wait / timeout) + 1;
-      if(ticksOver > 1.5)
-        console.log(chalk.yellow('Can\'t keep up! Tick took ' + ticksOver.toFixed(2) + ' ticks (' + (timeout - wait).toFixed(4) + 'ms)'));
-    }
-    
-    
-    this.ticksInSecond ++;
 
-    if(end > this.lastTPSCheckpoint + 1000) {
-      this.lastTPSCheckpoint = end;
-      this.tps = this.ticksInSecond;
-      this.ticksInSecond = 0;
-    }
 
-    if(this.paused) return;
-    setTimeout(this._boundTick, normalizedWait)
     
   }
 }
 
 export interface Tickable {
-  tick: () => Promise<void>
+  tick: (seconds: number) => Promise<void>
 }
 
 function ms4() {

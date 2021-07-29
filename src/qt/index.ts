@@ -64,8 +64,9 @@ ProcessManager.on('reload', () => {
 
 // HACK this is bullshit, :)
 function f() {
-  win.repaint();
+  // win.repaint();
   win.update();
   setTimeout(f, 0);
 }
 f();
+

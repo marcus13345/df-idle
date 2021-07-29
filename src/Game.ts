@@ -24,9 +24,9 @@ export class Game extends Frigid implements Tickable {
     return game;
   }
 
-  async tick() {
+  async tick(seconds: number) {
     for(const pawn of this.pawns) {
-      pawn.tick();
+      pawn.tick(seconds);
     }
     update();
   }

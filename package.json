@@ -1,6 +1,6 @@
 {
   "name": "hadean",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "main": "index.js",
   "license": "MIT",
   "type": "module",
@@ -65,6 +65,8 @@
     "tsc": "tsc",
     "tsc:watch": "yarn tsc --watch",
     "rollup": "rollup --config rollup.config.js",
-    "rollup:watch": "yarn rollup --watch"
+    "rollup:watch": "yarn rollup --watch",
+    "poop": "rollup --config rollup.prod.config.js && nodegui-packer --pack ./dist && \".\\deploy\\win32\\build\\Hadean\\qode.exe\"",
+    "build": "nodegui-packer --pack ./dist"
   }
 }

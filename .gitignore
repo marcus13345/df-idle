@@ -3,3 +3,6 @@ out
 data
 *.log
 bin
+deploy/win32/build
+*-v*.*.*.tgz
+dist

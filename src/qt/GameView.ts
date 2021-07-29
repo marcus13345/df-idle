@@ -20,6 +20,7 @@ import {
 import network from '../multiplayer/mDNS.js';
 import { Player } from '../multiplayer/Player.js';
 import { Pawn } from '../Pawn.js';
+import { ProcessManager } from '../ProcessManager.js';
 import { View } from './View.js';
 
 export class GameView extends View {
@@ -29,6 +30,7 @@ export class GameView extends View {
   left: QWidget;
   right: QTabWidget;
   timeControl: TimeControl;
+  debugPage: DebugPageWidget;
 
   addComponents(): void {
     this.addLayout();
@@ -52,9 +54,21 @@ export class GameView extends View {
       this.layout.setColumnStretch(i, 1);
     }
 
+    this.debugPage = new DebugPageWidget();
+
     this.right.addTab(new PawnPageWidget(), new QIcon(), 'Pawns');
     this.right.addTab(new InventoryPageWidget(), new QIcon(), 'Inventory');
     this.right.addTab(new MultiplayerPageWidget(), new QIcon(), 'Multiplayer');
+
+    ProcessManager.on('change', this.onProcessManagerChange.bind(this));
+  }
+
+  onProcessManagerChange() {
+    if(ProcessManager.connected) {
+      this.right.addTab(this.debugPage, new QIcon(), 'Debug');
+    } else {
+      this.right.removeTab(this.right.tabs.indexOf(this.debugPage))
+    }
   }
 
   constructor(game: Game) {
@@ -196,6 +210,8 @@ class PawnPageWidget extends ScrollPanel {
   }
 }
 
+
+// TODO remove later, when i know i dont need it
 // class PawnPageWidget extends QListWidget {
 //   constructor() {
 //     super();
@@ -265,6 +281,23 @@ class MultiplayerPageWidget extends ScrollPanel {
     for(const player of network.players) {
       this.addWidget(new MultiplayerPlayerWidget(player))
     }
+  }
+}
+
+class DebugPageWidget extends ScrollPanel {
+  constructor() {
+    super();
+  }
+
+  fill(): void {
+    const reload = new QPushButton();
+    reload.setText('Reload');
+    reload.addEventListener('clicked', this.reload.bind(this))
+    this.addWidget(reload);
+  }
+
+  private reload() {
+    ProcessManager.restart();
   }
 }
 

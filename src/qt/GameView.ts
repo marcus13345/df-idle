@@ -15,7 +15,8 @@ import {
   QPaintEvent,
   QPainter,
   QFrame,
-  QPushButton
+  QPushButton,
+  TabPosition
 } from '@nodegui/nodegui';
 import network from '../multiplayer/mDNS.js';
 import { Player } from '../multiplayer/Player.js';
@@ -45,6 +46,7 @@ export class GameView extends View {
     this.timeControl = new TimeControl();
 
     this.title.setText(this.game.name);
+    this.right.setTabPosition(TabPosition.West)
 
     this.layout.addWidget(this.title, 0, 0, 1, 5);
     this.layout.addWidget(this.timeControl, 0, 5, 1, 5)
@@ -70,7 +72,8 @@ export class GameView extends View {
     if(ProcessManager.connected) {
       this.right.addTab(this.debugPage, new QIcon(), 'Debug');
     } else {
-      this.right.removeTab(this.right.tabs.indexOf(this.debugPage))
+      if(this.right.tabs.indexOf(this.debugPage) > -1)
+        this.right.removeTab(this.right.tabs.indexOf(this.debugPage))
     }
   }
 

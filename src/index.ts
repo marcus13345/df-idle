@@ -9,7 +9,6 @@ import {
   setView,
   start
 } from '@ui';
-// @ts-ignore
 import ansi from 'sisteransi';
 
 // HACK static extension loading

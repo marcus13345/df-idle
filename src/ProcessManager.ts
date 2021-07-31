@@ -76,7 +76,7 @@ process.on('SIGTERM', () => ProcessManager.quit());
 process.on('SIGINT', () => ProcessManager.quit());
 process.on('beforeExit', () => ProcessManager.quit());
 
-// dumbass hack hahahah :)
+// HACK dumbass hack hahahah :)
 if (process.platform === "win32") {
   var rl = require("readline").createInterface({
     input: process.stdin,

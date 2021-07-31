@@ -1,7 +1,9 @@
 import {
+  QFont,
+  QFontDatabase,
   QMainWindow, WidgetEventTypes
 } from '@nodegui/nodegui';
-import { APPLICATION_NAME } from '../Constants.js';
+import { APPLICATION_NAME, FONT_FAMILY, FONT_LOCATION, FONT_SIZE } from '../Constants.js';
 import { ProcessManager } from '../ProcessManager.js';
 import { LoadingView } from './LoadingView.js';
 import { RequestReloadPopup } from './RequestReloadPopup.js';
@@ -12,12 +14,6 @@ export { Popup } from './Popup.js';
 export const win = new QMainWindow();
 win.setFixedSize(800, 600);
 win.setWindowTitle(APPLICATION_NAME);
-// win.setStyleSheet(`
-//   * {
-//     margin: 0px;
-//     padding: 0px;
-//   }
-// `);
 win.show();
 (global as any).win = win;
 win.addEventListener(WidgetEventTypes.Paint, _ => _);
@@ -29,6 +25,19 @@ win.addEventListener(
   WidgetEventTypes.Close,
   () => ProcessManager.quit()
 );
+
+// slightly broken idk
+// const fontId = QFontDatabase.addApplicationFont('src/assets/font/bitmap/MxPlus_IBM_VGA_8x16.ttf')
+// const fontId = QFontDatabase.addApplicationFont('src/assets/font/bitmap/MxPlus_ToshibaSat_8x16.ttf')
+// const fontId = QFontDatabase.addApplicationFont(FONT_LOCATION);
+// win.setStyleSheet(`
+//   * {
+//     font-family: '${FONT_FAMILY}';
+//     font-size: ${FONT_SIZE}px;
+//   }
+// `);
+
+
 
 setView(new LoadingView());
 
